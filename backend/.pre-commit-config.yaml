@@ -1,0 +1,20 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+# See https://bongnv.com/blog/2021-08-29-pre-commit-hooks-golang-projects/
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+  - repo: local
+    hooks:
+      - id: golangci-lint
+        name: Run golangci-lint
+        entry: ./bin/golangci-lint run ./... --config .golangci.yaml
+        language: system
+        files: '^.*\.go$'
+        pass_filenames: false
+        verbose: true

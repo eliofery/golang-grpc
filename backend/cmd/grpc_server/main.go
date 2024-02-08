@@ -2,23 +2,27 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
+	"net"
+	"net/http"
+	"time"
+
 	pb "github.com/eliofery/golang-fullstack/pkg/microservice/v1"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
-	"net"
-	"net/http"
 )
 
+// MicroserviceServer ...
 type MicroserviceServer struct {
 	pb.UnimplementedMicroServiceServer
 }
 
-func (s *MicroserviceServer) GetUserById(ctx context.Context, req *pb.GetUserByIdRequest) (*pb.GetUserByIdResponse, error) {
-	return &pb.GetUserByIdResponse{
+// GetUser ...
+func (s *MicroserviceServer) GetUser(context.Context, *pb.GetUserRequest) (*pb.GetUserResponse, error) {
+	return &pb.GetUserResponse{
 		Result: &wrappers.StringValue{Value: "success"},
 	}, nil
 }
@@ -28,8 +32,8 @@ func main() {
 
 	// gRPC server
 	go func(ch chan error) {
-		fmt.Println("gRPC server start :50051")
-		listen, err := net.Listen("tcp", ":50051")
+		log.Println("gRPC server start :50051")
+		listen, err := net.Listen("tcp", "localhost:50051")
 		if err != nil {
 			ch <- err
 		}
@@ -57,9 +61,15 @@ func main() {
 		}
 
 		handler := allowCORS(mux)
+		server := &http.Server{
+			Addr:         "localhost:8080",
+			Handler:      handler,
+			ReadTimeout:  10 * time.Second,
+			WriteTimeout: 10 * time.Second,
+		}
 
-		fmt.Println("REST server start :8080")
-		if err = http.ListenAndServe(":8080", handler); err != nil {
+		log.Println("REST server start :8080")
+		if err = server.ListenAndServe(); err != nil {
 			ch <- err
 		}
 	}()

@@ -2,56 +2,59 @@ syntax = "proto3";
 
 package microservice.v1;
 
-option go_package = "github.com/eliofery/golang-fullstack/pkg/microservice/v1";
-
 import "google/api/annotations.proto";
+import "microservice/v1/user.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-import "microservice/v1/user.proto";
-
+option go_package = "github.com/eliofery/golang-fullstack/pkg/microservice/v1";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
-    info: {
-        title: "Главный заголовок API";
-        version: "1.0";
-        description: "Основное описание API";
-        contact: {
-            name: "Название проекта, Имя автора";
-            url: "https://github.com/eliofery/golang-fullstack";
-            email: "mail@example.site";
-        };
-        license: {
-            name: "Название лицензии";
-            url: "https://github.com/eliofery/golang-fullstack/blob/main/LICENSE";
-        };
+  info: {
+    title: "Главный заголовок API";
+    version: "1.0";
+    description: "Основное описание API";
+    contact: {
+      name: "Название проекта, Имя автора";
+      url: "https://github.com/eliofery/golang-fullstack";
+      email: "mail@example.site";
     };
-    host: "localhost:8080";
-    schemes: [HTTP, HTTPS];
-    consumes: ["application/json", "application/xml"]; // request
-    produces: ["application/json", "application/xml"]; // response
+    license: {
+      name: "Название лицензии";
+      url: "https://github.com/eliofery/golang-fullstack/blob/main/LICENSE";
+    };
+  };
+  host: "localhost:8080";
+  schemes: [
+    HTTP,
+    HTTPS
+  ];
+  consumes: [
+    "application/json",
+    "application/xml"
+  ]; // request
+  produces: [
+    "application/json",
+    "application/xml"
+  ]; // response
 };
 
 service MicroService {
-    rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdResponse) {
-        option (google.api.http) = {
-            post: "/v1/user"
-            body: "*"
-        };
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/user"
+      body: "*"
+    };
 
-        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-            summary: "Получение данных пользователя по его ID";
-            operation_id: "getUserById";
-            responses: {
-                key: "200"
-                value: {
-                    description: "OK Success";
-                }
-            },
-            responses: {
-                key: "404"
-                value: {
-                    description: "Not found";
-                }
-            }
-        };
-    }
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Получение данных пользователя по его ID";
+      operation_id: "getUser";
+      responses: {
+        key: "200"
+        value: {description: "OK Success"}
+      },
+      responses: {
+        key: "404"
+        value: {description: "Not found"}
+      }
+    };
+  }
 }
