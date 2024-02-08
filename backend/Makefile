@@ -17,15 +17,16 @@ build:
 
 # Запуск бинарника
 run:
-	bin/grpc_server
+	bin/grpc-server
 
 # Генерация кода
 generate:
 	bin/buf generate
 
 # Создание бинарника
+.PHONY: bin
 bin:
-	go build -o bin/grpc_server cmd/grpc_server/main.go
+	go build -o bin/grpc-server cmd/grpc_server/main.go
 
 clean:
 	rm -rf $(LOCAL_BIN)
