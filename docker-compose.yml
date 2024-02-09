@@ -2,19 +2,44 @@ version: "3.9"
 
 services:
   swagger-editor:
-    image: swaggerapi/swagger-editor
+    image: swaggerapi/swagger-editor:v4.12.1
     container_name: "swagger-editor-container"
     ports:
-      - "8085:8080"
+      - "${SWAGGER_EDITOR_PORT}:8080"
 
   swagger-ui:
-    image: swaggerapi/swagger-ui
+    image: swaggerapi/swagger-ui:v5.11.8
     container_name: "swagger-ui-container"
     ports:
-      - "8086:8080"
+      - "${SWAGGER_UI_PORT}:8080"
     volumes:
       - ./docs/microservice:/usr/share/nginx/html/docs
     environment:
       URLS: "[
         {url: '/docs/v1/microservice_grpc.swagger.json', name: 'API Version 1.0'}
       ]"
+
+  postgres:
+    image: postgres:16.2
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer:4.8.1
+    restart: always
+    environment:
+      ADMINER_DESIGN: dracula
+    ports:
+      - "${ADMINER_PORT}:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_volume:
