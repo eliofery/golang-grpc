@@ -2,3 +2,6 @@
 bin
 docs
 pkg/microservice
+
+.env
+prod.env

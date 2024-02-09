@@ -3,7 +3,7 @@ package cli
 
 import "flag"
 
-// options cli options struct
+// Options cli options struct
 type options struct {
 	ConfigPath string // Path to config file
 }

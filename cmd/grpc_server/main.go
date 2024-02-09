@@ -6,6 +6,8 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/eliofery/golang-fullstack/internal/cli"
@@ -38,15 +40,8 @@ func main() {
 		log.Fatalf("failed to load config: %v", err)
 	}
 
-	grpcConfig, err := env.NewGRPCConfig()
-	if err != nil {
-		log.Printf("failed to get grpc config: %v", err)
-	}
-
-	restConfig, err := env.NewRESTConfig()
-	if err != nil {
-		log.Printf("failed to get rest config: %v", err)
-	}
+	grpcConfig := env.NewServerConfig(env.GrpcEnv)
+	restConfig := env.NewServerConfig(env.RestEnv)
 
 	ch := make(chan error, 2)
 
@@ -75,17 +70,27 @@ func main() {
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 		}
 
-		err = pb.RegisterMicroServiceHandlerFromEndpoint(context.Background(), mux, ":50051", opts)
+		err := pb.RegisterMicroServiceHandlerFromEndpoint(context.Background(), mux, ":50051", opts)
 		if err != nil {
 			ch <- err
 		}
 
-		//handler := allowCORS(mux)
+		readTimeout, err := strconv.Atoi(os.Getenv("READ_TIMEOUT"))
+		if err != nil {
+			ch <- err
+		}
+
+		writeTimeout, err := strconv.Atoi(os.Getenv("WRITE_TIMEOUT"))
+		if err != nil {
+			ch <- err
+		}
+
+		handler := allowCORS(mux)
 		server := &http.Server{
 			Addr:         restConfig.Address(),
-			Handler:      mux,
-			ReadTimeout:  10 * time.Second,
-			WriteTimeout: 10 * time.Second,
+			Handler:      handler,
+			ReadTimeout:  time.Duration(readTimeout) * time.Second,
+			WriteTimeout: time.Duration(writeTimeout) * time.Second,
 		}
 
 		log.Printf("REST server start %s", restConfig.Address())
@@ -101,17 +106,18 @@ func main() {
 	}
 }
 
-//func allowCORS(handler http.Handler) http.Handler {
-//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		w.Header().Set("Access-Control-Allow-Origin", "*")
-//		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-//		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-//
-//		if r.Method == "OPTIONS" {
-//			w.WriteHeader(http.StatusNoContent)
-//			return
-//		}
-//
-//		handler.ServeHTTP(w, r)
-//	})
-//}
+// allowCORS ...
+func allowCORS(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		handler.ServeHTTP(w, r)
+	})
+}
