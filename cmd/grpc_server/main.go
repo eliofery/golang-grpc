@@ -3,9 +3,8 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/eliofery/golang-fullstack/pkg/database"
-	"github.com/eliofery/golang-fullstack/pkg/database/postgres"
-	"log"
+	l "log"
+	"log/slog"
 	"net"
 	"net/http"
 	"os"
@@ -15,6 +14,8 @@ import (
 	"github.com/eliofery/golang-fullstack/internal/cli"
 	"github.com/eliofery/golang-fullstack/internal/config/env"
 	"github.com/eliofery/golang-fullstack/pkg/config"
+	"github.com/eliofery/golang-fullstack/pkg/database/postgres"
+	"github.com/eliofery/golang-fullstack/pkg/log"
 	pb "github.com/eliofery/golang-fullstack/pkg/microservice/v1"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -41,29 +42,32 @@ func main() {
 	ctx := context.Background()
 
 	if err := config.Load(cli.Option.ConfigPath); err != nil {
-		log.Fatalf("failed to load config: %v", err)
+		l.Fatalf("failed to load config: %v", err)
 	}
 
-	grpcConfig := env.NewServerConfig(env.GrpcEnv)
-	restConfig := env.NewServerConfig(env.RestEnv)
+	loggerConfig := env.NewLoggerConfig()
+	logger := log.New(loggerConfig)
+
 	pgConfig, err := env.NewPostgresConfig()
 	if err != nil {
-		log.Printf("failed to get postgres config: %v", err)
+		logger.Fatal("failed to get postgres config", slog.String("err", err.Error()))
 	}
 
-	if err = database.Connect(ctx, postgres.New(pgConfig)); err != nil {
-		log.Fatalf("failed to connect database: %v", err)
+	db := postgres.New()
+	if err = db.Connect(ctx, pgConfig.DSN()); err != nil {
+		logger.Fatal("failed to connect database", slog.String("err", err.Error()))
 	}
 
 	ch := make(chan error, 2)
 
 	// gRPC server
 	go func(ch chan error) {
+		grpcConfig := env.NewServerConfig(env.GrpcEnv)
 		listen, err := net.Listen("tcp", grpcConfig.Address())
 		if err != nil {
 			ch <- err
 		}
-		log.Printf("gRPC server start %s", grpcConfig.Address())
+		logger.Info("gRPC server start", slog.String("grpc", grpcConfig.Address()))
 
 		grpcServer := grpc.NewServer(grpc.Creds(insecure.NewCredentials()))
 		reflection.Register(grpcServer)
@@ -98,22 +102,25 @@ func main() {
 		}
 
 		handler := allowCORS(mux)
+		restConfig := env.NewServerConfig(env.RestEnv)
 		server := &http.Server{
 			Addr:         restConfig.Address(),
 			Handler:      handler,
 			ReadTimeout:  time.Duration(readTimeout) * time.Second,
 			WriteTimeout: time.Duration(writeTimeout) * time.Second,
 		}
+		_ = server
 
-		log.Printf("REST server start %s", restConfig.Address())
-		if err = server.ListenAndServe(); err != nil {
+		logger.Info("REST server start", slog.String("rest", restConfig.Address()))
+		err = server.ListenAndServe()
+		if err != nil {
 			ch <- err
 		}
 	}()
 
 	for i := 0; i < 2; i++ {
-		if err := <-ch; err != nil {
-			panic(err)
+		if err = <-ch; err != nil {
+			logger.Fatal("failed to start server", slog.String("err", err.Error()))
 		}
 	}
 }

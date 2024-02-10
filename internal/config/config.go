@@ -1,5 +1,7 @@
 package config
 
+import "log/slog"
+
 // ServerConfig ...
 type ServerConfig interface {
 	Address() string
@@ -8,4 +10,9 @@ type ServerConfig interface {
 // DatabaseConfig ...
 type DatabaseConfig interface {
 	DSN() string
+}
+
+// LoggerConfig ...
+type LoggerConfig interface {
+	GetLevel() slog.Level
 }

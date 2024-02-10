@@ -3,24 +3,22 @@ package postgres
 import (
 	"context"
 
-	"github.com/eliofery/golang-fullstack/internal/config"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 // Postgres ...
 type Postgres struct {
 	*pgxpool.Pool
-	config.DatabaseConfig
 }
 
 // New ...
-func New(config config.DatabaseConfig) *Postgres {
-	return &Postgres{DatabaseConfig: config}
+func New() *Postgres {
+	return &Postgres{}
 }
 
 // Connect ...
-func (p *Postgres) Connect(ctx context.Context) error {
-	pool, err := pgxpool.New(ctx, p.DatabaseConfig.DSN())
+func (p *Postgres) Connect(ctx context.Context, dsn string) error {
+	pool, err := pgxpool.New(ctx, dsn)
 	if err != nil {
 		return err
 	}
