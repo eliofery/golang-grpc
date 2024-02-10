@@ -13,14 +13,10 @@ const (
 	environmentProduct = "prod"
 )
 
-var (
-	levelDefault = slog.LevelDebug
-
-	levels = map[string]slog.Level{
-		environmentLocal:   levelDefault,
-		environmentProduct: slog.LevelInfo,
-	}
-)
+var levels = map[string]slog.Level{
+	environmentLocal:   slog.LevelDebug,
+	environmentProduct: slog.LevelInfo,
+}
 
 type loggerConfig struct {
 	environment string
@@ -42,7 +38,7 @@ func NewLoggerConfig() config.LoggerConfig {
 func (conf *loggerConfig) GetLevel() slog.Level {
 	level, ok := levels[conf.environment]
 	if !ok {
-		level = levelDefault
+		level = levels[environmentLocal]
 	}
 
 	return level

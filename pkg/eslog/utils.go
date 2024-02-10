@@ -1,11 +1,16 @@
-package log
+// Package eslog ...
+// nolint
+package eslog
 
 import (
 	"fmt"
 	"log/slog"
 	"os"
 	"path/filepath"
+	"time"
 )
+
+const timestampFormat = "2006-01-02 15:04:05.999999999 -0700 -07"
 
 // replaceLevel ...
 func replaceLevel(a slog.Attr) slog.Attr {
@@ -26,7 +31,7 @@ func replaceLevel(a slog.Attr) slog.Attr {
 // absPath, err := filepath.Abs(source.File)
 // formattedPath := fmt.Sprintf("\x1b]8;;file://%v\x1b\\%s:%v\x1b]8;;\x1b\\", absPath, relPath, source.Line)
 func replaceSource(a slog.Attr) slog.Attr {
-	source := a.Value.Any().(*slog.Source)
+	source := a.Value.Any().(slog.Source)
 
 	pwd, err := os.Getwd()
 	if err != nil {
@@ -38,10 +43,25 @@ func replaceSource(a slog.Attr) slog.Attr {
 		return a
 	}
 
-	formattedPath := fmt.Sprintf("%s:%d", relPath, source.Line)
+	basePath := filepath.Base(relPath)
+
+	formattedPath := fmt.Sprintf("%s:%d", basePath, source.Line)
 
 	return slog.Attr{
 		Key:   a.Key,
 		Value: slog.StringValue(formattedPath),
 	}
+}
+
+// replaceTime ...
+func replaceTime(a slog.Attr) slog.Attr {
+	t, err := time.Parse(timestampFormat, a.Value.String())
+	if err != nil {
+		return a
+	}
+
+	formattedTime := t.Format(time.DateTime)
+	a.Value = slog.StringValue(formattedTime)
+
+	return a
 }

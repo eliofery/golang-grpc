@@ -12,10 +12,11 @@ import (
 	"time"
 
 	"github.com/eliofery/golang-fullstack/internal/cli"
+	"github.com/eliofery/golang-fullstack/internal/config"
 	"github.com/eliofery/golang-fullstack/internal/config/env"
-	"github.com/eliofery/golang-fullstack/pkg/config"
 	"github.com/eliofery/golang-fullstack/pkg/database/postgres"
-	"github.com/eliofery/golang-fullstack/pkg/log"
+	"github.com/eliofery/golang-fullstack/pkg/eslog"
+	"github.com/eliofery/golang-fullstack/pkg/eslog/pretty"
 	pb "github.com/eliofery/golang-fullstack/pkg/microservice/v1"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -39,14 +40,20 @@ func (s *MicroserviceServer) GetUser(context.Context, *pb.GetUserRequest) (*pb.G
 func main() {
 	flag.Parse()
 
-	ctx := context.Background()
-
-	if err := config.Load(cli.Option.ConfigPath); err != nil {
+	conf := config.New(&cli.Option)
+	if err := conf.LoadGoDotEnv(); err != nil {
 		l.Fatalf("failed to load config: %v", err)
 	}
 
 	loggerConfig := env.NewLoggerConfig()
-	logger := log.New(loggerConfig)
+	prettyHandler := pretty.NewHandler(loggerConfig)
+	logger := eslog.New(prettyHandler)
+
+	logger.Debug("test", slog.String("dg", "23523"), slog.Any("222", 235235235))
+	logger.Info("test")
+	logger.Warn("test")
+	logger.Error("test")
+	logger.Fatal("test")
 
 	pgConfig, err := env.NewPostgresConfig()
 	if err != nil {
@@ -54,7 +61,7 @@ func main() {
 	}
 
 	db := postgres.New()
-	if err = db.Connect(ctx, pgConfig.DSN()); err != nil {
+	if err = db.Connect(context.Background(), pgConfig.DSN()); err != nil {
 		logger.Fatal("failed to connect database", slog.String("err", err.Error()))
 	}
 
