@@ -2,18 +2,12 @@ package main
 
 import (
 	"context"
-	"flag"
-	l "log"
 	"log/slog"
 	"net"
 	"net/http"
-	"os"
-	"strconv"
-	"time"
 
 	"github.com/eliofery/golang-fullstack/internal/cli"
 	"github.com/eliofery/golang-fullstack/internal/config"
-	"github.com/eliofery/golang-fullstack/internal/config/env"
 	"github.com/eliofery/golang-fullstack/pkg/database/postgres"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
 	"github.com/eliofery/golang-fullstack/pkg/eslog/pretty"
@@ -38,30 +32,17 @@ func (s *MicroserviceServer) GetUser(context.Context, *pb.GetUserRequest) (*pb.G
 }
 
 func main() {
-	flag.Parse()
+	cfg := config.MustLoad(cli.Option)
 
-	conf := config.New(&cli.Option)
-	if err := conf.LoadGoDotEnv(); err != nil {
-		l.Fatalf("failed to load config: %v", err)
-	}
+	logger := eslog.New(pretty.NewHandler(cfg))
+	logger.Debug("Debug message", slog.String("dg", "23523"), slog.Any("222", 235235235))
+	logger.Info("Info message")
+	logger.Warn("Warn message")
+	logger.Error("Error message")
+	logger.Fatal("Fatal message")
 
-	loggerConfig := env.NewLoggerConfig()
-	prettyHandler := pretty.NewHandler(loggerConfig)
-	logger := eslog.New(prettyHandler)
-
-	logger.Debug("test", slog.String("dg", "23523"), slog.Any("222", 235235235))
-	logger.Info("test")
-	logger.Warn("test")
-	logger.Error("test")
-	logger.Fatal("test")
-
-	pgConfig, err := env.NewPostgresConfig()
-	if err != nil {
-		logger.Fatal("failed to get postgres config", slog.String("err", err.Error()))
-	}
-
-	db := postgres.New()
-	if err = db.Connect(context.Background(), pgConfig.DSN()); err != nil {
+	db := postgres.New(cfg)
+	if err := db.Connect(context.Background()); err != nil {
 		logger.Fatal("failed to connect database", slog.String("err", err.Error()))
 	}
 
@@ -69,12 +50,11 @@ func main() {
 
 	// gRPC server
 	go func(ch chan error) {
-		grpcConfig := env.NewServerConfig(env.GrpcEnv)
-		listen, err := net.Listen("tcp", grpcConfig.Address())
+		listen, err := net.Listen("tcp", cfg.GRPCAddress())
 		if err != nil {
 			ch <- err
 		}
-		logger.Info("gRPC server start", slog.String("grpc", grpcConfig.Address()))
+		logger.Info("gRPC server start", slog.String("grpc", cfg.GRPCAddress()))
 
 		grpcServer := grpc.NewServer(grpc.Creds(insecure.NewCredentials()))
 		reflection.Register(grpcServer)
@@ -93,32 +73,22 @@ func main() {
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 		}
 
-		err := pb.RegisterMicroServiceHandlerFromEndpoint(context.Background(), mux, ":50051", opts)
-		if err != nil {
-			ch <- err
-		}
-
-		readTimeout, err := strconv.Atoi(os.Getenv("READ_TIMEOUT"))
-		if err != nil {
-			ch <- err
-		}
-
-		writeTimeout, err := strconv.Atoi(os.Getenv("WRITE_TIMEOUT"))
+		err := pb.RegisterMicroServiceHandlerFromEndpoint(context.Background(), mux, cfg.GRPCAddress(), opts)
 		if err != nil {
 			ch <- err
 		}
 
 		handler := allowCORS(mux)
-		restConfig := env.NewServerConfig(env.RestEnv)
 		server := &http.Server{
-			Addr:         restConfig.Address(),
+			Addr:         cfg.RESTAddress(),
 			Handler:      handler,
-			ReadTimeout:  time.Duration(readTimeout) * time.Second,
-			WriteTimeout: time.Duration(writeTimeout) * time.Second,
+			ReadTimeout:  cfg.Timeout.Read,
+			WriteTimeout: cfg.Timeout.Write,
+			IdleTimeout:  cfg.Timeout.Idle,
 		}
 		_ = server
 
-		logger.Info("REST server start", slog.String("rest", restConfig.Address()))
+		logger.Info("REST server start", slog.String("rest", cfg.RESTAddress()))
 		err = server.ListenAndServe()
 		if err != nil {
 			ch <- err
@@ -126,7 +96,7 @@ func main() {
 	}()
 
 	for i := 0; i < 2; i++ {
-		if err = <-ch; err != nil {
+		if err := <-ch; err != nil {
 			logger.Fatal("failed to start server", slog.String("err", err.Error()))
 		}
 	}

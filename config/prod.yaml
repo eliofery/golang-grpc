@@ -1,0 +1,33 @@
+env: "prod"
+
+logger:
+  level: info
+
+server:
+  host: "localhost"
+  timeout:
+    read: 5s
+    write: 5s
+    idle: 15s
+  grpc:
+    port: 50051
+  rest:
+    port: 8080
+
+swagger:
+  editor:
+    port: 8085
+  ui:
+    port: 8086
+
+postgres:
+  host: "localhost"
+  port: 5432
+  # Set env
+  # user:
+  # password:
+  # database:
+  sslmode: disable
+
+adminer:
+  port: 3333

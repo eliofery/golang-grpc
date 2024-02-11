@@ -26,9 +26,9 @@ type Handler struct {
 }
 
 // NewHandler ...
-func NewHandler(conf config.LoggerConfig) eslog.Handler {
+func NewHandler(cfg *config.Config) eslog.Handler {
 	lvl := new(slog.LevelVar)
-	lvl.Set(conf.GetLevel())
+	lvl.Set(cfg.LogLevel())
 
 	out := os.Stdout
 	opts := HandlerOptions{

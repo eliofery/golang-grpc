@@ -1,42 +1,33 @@
 package config
 
 import (
-	"log/slog"
+	"log"
 
 	"github.com/eliofery/golang-fullstack/internal/cli"
-	"github.com/joho/godotenv"
+	"github.com/ilyakaznacheev/cleanenv"
 )
-
-// ServerConfig ...
-type ServerConfig interface {
-	Address() string
-}
-
-// DatabaseConfig ...
-type DatabaseConfig interface {
-	DSN() string
-}
-
-// LoggerConfig ...
-type LoggerConfig interface {
-	GetLevel() slog.Level
-}
 
 // Config ...
 type Config struct {
-	*cli.Options
+	Env      string `yaml:"env" env-default:"local"`
+	Logger   `yaml:"logger"`
+	Server   `yaml:"server"`
+	Swagger  `yaml:"swagger"`
+	Postgres `yaml:"postgres"`
+	Adminer  `yaml:"adminer"`
 }
 
-// New ...
-func New(cmd *cli.Options) *Config {
-	return &Config{Options: cmd}
-}
+// MustLoad ...
+func MustLoad(cmd cli.Options) *Config {
+	var cfg Config
 
-// LoadGoDotEnv ...
-func (c *Config) LoadGoDotEnv() error {
-	if err := godotenv.Load(c.ConfigPath); err != nil {
-		return err
+	if err := cleanenv.ReadConfig(cmd.EnvPath, &cfg); err != nil {
+		log.Printf("cannot read env config file: %s", err)
 	}
 
-	return nil
+	if err := cleanenv.ReadConfig(cmd.YamlPath, &cfg); err != nil {
+		log.Fatalf("cannot read yaml config file: %s", err)
+	}
+
+	return &cfg
 }
