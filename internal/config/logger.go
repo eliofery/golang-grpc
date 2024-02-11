@@ -14,14 +14,18 @@ const (
 	logNameFatal = "fatal"
 )
 
-// LevelNames ...
-var LevelNames = map[string]slog.Level{
-	logNameDebug: slog.LevelDebug,
-	logNameInfo:  slog.LevelInfo,
-	logNameWarn:  slog.LevelWarn,
-	logNameError: slog.LevelError,
-	logNameFatal: eslog.LevelFatal,
-}
+var (
+	// LevelNames ...
+	LevelNames = map[string]slog.Level{
+		logNameDebug: slog.LevelDebug,
+		logNameInfo:  slog.LevelInfo,
+		logNameWarn:  slog.LevelWarn,
+		logNameError: slog.LevelError,
+		logNameFatal: eslog.LevelFatal,
+	}
+
+	levelVar *slog.LevelVar
+)
 
 // Logger ...
 type Logger struct {
@@ -31,11 +35,21 @@ type Logger struct {
 }
 
 // LogLevel ...
-func (c *Config) LogLevel() slog.Level {
-	level, ok := LevelNames[c.Logger.Level]
+func (l *Logger) LogLevel() slog.Level {
+	level, ok := LevelNames[l.Level]
 	if !ok {
 		level = LevelNames[logNameInfo]
 	}
 
 	return level
+}
+
+// LevelVar ...
+func (l *Logger) LevelVar() *slog.LevelVar {
+	if levelVar == nil {
+		levelVar = new(slog.LevelVar)
+		levelVar.Set(l.LogLevel())
+	}
+
+	return levelVar
 }

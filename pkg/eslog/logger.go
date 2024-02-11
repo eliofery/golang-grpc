@@ -35,11 +35,11 @@ const LevelFatal slog.Level = 12
 
 // LevelNames ...
 var LevelNames = map[slog.Leveler]string{
-	slog.LevelDebug: "DEB",
-	slog.LevelInfo:  "INF",
-	slog.LevelWarn:  "WAR",
-	slog.LevelError: "ERR",
-	LevelFatal:      "FAT",
+	slog.LevelDebug: "DEBUG",
+	slog.LevelInfo:  "INFO",
+	slog.LevelWarn:  "WARN",
+	slog.LevelError: "ERROR",
+	LevelFatal:      "FATAL",
 }
 
 type colorFn func(format string, a ...any) string
@@ -61,12 +61,12 @@ type Logger struct {
 
 // New log init
 // See: https://github.com/golang/go/issues/59145#issuecomment-1481920720
-func New(handler Handler) *Logger {
+func New(handler Handler, lvl *slog.LevelVar) *Logger {
 	logger := slog.New(handler)
 
 	return &Logger{
 		Logger:   logger,
-		LevelVar: handler.LevelVar(),
+		LevelVar: lvl,
 	}
 }
 
@@ -85,13 +85,6 @@ func (l *Logger) log(level slog.Level, msg string, args ...any) {
 	r.Add(args...)
 
 	_ = l.Handler().Handle(context.Background(), r)
-}
-
-// SetLevel ...
-func (l *Logger) SetLevel(level slog.Level) *Logger {
-	l.LevelVar.Set(level)
-
-	return l
 }
 
 // Fatal logs at LevelFatal.

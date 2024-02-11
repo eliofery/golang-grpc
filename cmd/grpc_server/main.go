@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	"os"
 
 	"github.com/eliofery/golang-fullstack/internal/cli"
 	"github.com/eliofery/golang-fullstack/internal/config"
@@ -34,8 +35,15 @@ func (s *MicroserviceServer) GetUser(context.Context, *pb.GetUserRequest) (*pb.G
 func main() {
 	cfg := config.MustLoad(cli.Option)
 
-	logger := eslog.New(pretty.NewHandler(cfg))
-	logger.Debug("Debug message", slog.String("dg", "23523"), slog.Any("222", 235235235))
+	logger := eslog.New(pretty.NewHandler(os.Stdout, &pretty.HandlerOptions{
+		SlogOptions: &slog.HandlerOptions{
+			Level:     cfg.LevelVar(),
+			AddSource: true,
+		},
+		JSON: false,
+	}), cfg.LevelVar())
+
+	logger.Debug("Debug message", slog.Int("price", 12345), slog.Any("name", "John"))
 	logger.Info("Info message")
 	logger.Warn("Warn message")
 	logger.Error("Error message")

@@ -4,43 +4,45 @@ package pretty
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"io"
 	"log"
 	"log/slog"
-	"os"
+	"strings"
 
-	"github.com/eliofery/golang-fullstack/internal/config"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
 )
 
+// jsonResult ...
+type jsonResult struct {
+	Time    string `json:"time,omitempty"`
+	Level   string `json:"level,omitempty"`
+	Source  string `json:"source,omitempty"`
+	Message string `json:"msg,omitempty"`
+}
+
 // HandlerOptions ...
 type HandlerOptions struct {
-	SlogOptions slog.HandlerOptions
-	*slog.LevelVar
+	SlogOptions *slog.HandlerOptions
+	JSON        bool
 }
 
 // Handler ...
 type Handler struct {
 	slog.Handler
 	*log.Logger
-	HandlerOptions
+	*HandlerOptions
 }
 
 // NewHandler ...
-func NewHandler(cfg *config.Config) eslog.Handler {
-	lvl := new(slog.LevelVar)
-	lvl.Set(cfg.LogLevel())
-
-	out := os.Stdout
-	opts := HandlerOptions{
-		SlogOptions: slog.HandlerOptions{
-			Level:     lvl,
-			AddSource: true,
-		},
-		LevelVar: lvl,
+func NewHandler(out io.Writer, opts *HandlerOptions) eslog.Handler {
+	if opts == nil {
+		opts = &HandlerOptions{}
 	}
 
 	return &Handler{
-		Handler:        slog.NewTextHandler(out, &opts.SlogOptions),
+		Handler:        slog.NewTextHandler(out, opts.SlogOptions),
 		Logger:         log.New(out, "", 0),
 		HandlerOptions: opts,
 	}
@@ -56,11 +58,34 @@ func (h *Handler) Handle(_ context.Context, r slog.Record) error {
 	message := h.message(r)
 	attrs := h.attrs(r)
 
+	var result string
 	if h.SlogOptions.AddSource {
-		h.Logger.Println(time, level, source, message, attrs)
+		result = fmt.Sprintf("%s %s %s %s %s", time, level, source, message, attrs)
 	} else {
-		h.Logger.Println(time, level, message, attrs)
+		result = fmt.Sprintf("%s %s %s %s", time, level, message, attrs)
 	}
+
+	if h.JSON {
+		jResult := jsonResult{
+			Time:    time,
+			Level:   level,
+			Source:  source,
+			Message: message,
+		}
+
+		var jsonData []byte
+		jsonData, _ = json.Marshal(jResult)
+
+		// generating json string
+		withoutLastChar := string(jsonData[:len(jsonData)-1]) // remove last char "}"
+		parts := []string{withoutLastChar}
+		if len(attrs) > 0 {
+			parts = append(parts, attrs)
+		}
+		result = strings.Join(parts, ",") + "}" // add last char "}"
+	}
+
+	h.Logger.Println(result)
 
 	return nil
 }
@@ -68,9 +93,4 @@ func (h *Handler) Handle(_ context.Context, r slog.Record) error {
 // Enabled ...
 func (h *Handler) Enabled(_ context.Context, level slog.Level) bool {
 	return level >= h.SlogOptions.Level.Level()
-}
-
-// LevelVar ...
-func (h *Handler) LevelVar() *slog.LevelVar {
-	return h.HandlerOptions.LevelVar
 }
