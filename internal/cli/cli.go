@@ -4,7 +4,12 @@ package cli
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
+)
+
+var (
+	pathDescription = "internal/cli/description.txt"
 )
 
 // Config ...
@@ -13,47 +18,39 @@ type Config struct {
 	YamlPath string
 }
 
+// Migration ...
+type Migration struct {
+	IsMigration bool
+}
+
 // Options cli options struct
 type Options struct {
 	Config
+	Migration
 }
 
 // Option cli options
 var Option Options
 
 func init() {
-	config := flag.NewFlagSet("config options", flag.ContinueOnError)
-	config.StringVar(&Option.Config.EnvPath, "config-env-path", ".env", "path to env config file")
-	config.StringVar(&Option.Config.YamlPath, "config-yaml-path", "config/local.yaml", "path to yaml config file")
-	configUsage := config.Usage
-
-	//example := flag.NewFlagSet("example options", flag.ContinueOnError)
-	//example.StringVar(&Option.Config.EnvPath, "example", "", "example one")
-	//example.StringVar(&Option.Config.EnvPath, "example-2", "", "example two")
-	//exampleUsage := example.Usage
-
-	config.Usage = func() {
-		_, _ = fmt.Fprintln(flag.CommandLine.Output(), "GRPC/REST server:")
-		_, _ = fmt.Fprintln(flag.CommandLine.Output(), "  To start the server you need to specify parameters in env:")
-		_, _ = fmt.Fprintln(flag.CommandLine.Output(), "  POSTGRES_USER\t\t\tpostgres user name")
-		_, _ = fmt.Fprintln(flag.CommandLine.Output(), "  POSTGRES_PASSWORD\t\tpostgres user password")
-		_, _ = fmt.Fprintln(flag.CommandLine.Output(), "  POSTGRES_DATABASE\t\tpostgres name database")
-		_, _ = fmt.Fprintln(flag.CommandLine.Output(), "  Example:")
-		_, _ = fmt.Fprintln(flag.CommandLine.Output(), "  POSTGRES_USER=root POSTGRES_PASSWORD=123456 POSTGRES_DATABASE=test bin/grpc-server")
-
-		optionsDisplay(configUsage)
-		//optionsDisplay(exampleUsage)
+	flag.Usage = func() {
+		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "%s\n", Option.descriptionText())
+		_, _ = fmt.Fprint(flag.CommandLine.Output(), "Options:\n")
+		flag.PrintDefaults()
 	}
 
-	_ = config.Parse(os.Args[1:])
+	flag.StringVar(&Option.Config.EnvPath, "config-env-path", ".env", "path to env config file")
+	flag.StringVar(&Option.Config.YamlPath, "config-yaml-path", "config/local.yaml", "path to yaml config file")
+	flag.BoolVar(&Option.Migration.IsMigration, "migration", false, "run database migration on project start")
 
-	if len(os.Args) > 1 && os.Args[1] == "--help" {
-		os.Exit(0)
-	}
+	flag.Parse()
 }
 
-// optionsDisplay ...
-func optionsDisplay(usage func()) {
-	_, _ = fmt.Fprintln(flag.CommandLine.Output(), "")
-	usage()
+func (o *Options) descriptionText() string {
+	file, _ := os.OpenFile(pathDescription, os.O_RDONLY, 0644)
+	defer file.Close()
+
+	b, _ := io.ReadAll(file)
+
+	return string(b)
 }
