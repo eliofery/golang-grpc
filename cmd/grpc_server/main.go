@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/eliofery/golang-fullstack/internal/cli"
+	"github.com/eliofery/golang-fullstack/docs/cli"
 	"github.com/eliofery/golang-fullstack/internal/config"
 	"github.com/eliofery/golang-fullstack/pkg/database/postgres"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
@@ -33,7 +33,7 @@ func (s *MicroserviceServer) GetUser(context.Context, *pb.GetUserRequest) (*pb.G
 }
 
 func main() {
-	cfg := config.MustLoad(cli.Option)
+	cfg := config.MustLoad(&cli.Option)
 
 	logger := eslog.New(pretty.NewHandler(os.Stdout, &pretty.HandlerOptions{
 		SlogOptions: &slog.HandlerOptions{

@@ -16,7 +16,7 @@ services:
       - ./docs/microservice:/usr/share/nginx/html/docs
     environment:
       URLS: "[
-        {url: '/docs/v1/microservice_grpc.swagger.json', name: 'API Version 1.0'}
+        {url: '/docs/v1/microservice.swagger.json', name: 'API Version 1.0'}
       ]"
 
   postgres:

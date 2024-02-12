@@ -6,7 +6,7 @@ include .env
 
 # Environments
 LOCAL_BIN=$(CURDIR)/bin
-LOCAL_MIGRATION_DIR=$(CURDIR)/internal/migrations
+LOCAL_MIGRATION_DIR=$(CURDIR)/docs/migrations
 LOCAL_MIGRATION_DSN="postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@127.0.0.1:$(POSTGRES_PORT)/$(POSTGRES_DATABASE)?sslmode=disable"
 
 ifeq ($(OS), Windows_NT)
@@ -31,6 +31,8 @@ else
 	HELP_CMD=grep -E '^[a-zA-Z_-]+:.*?\#\# .*$$' './Makefile' | awk 'BEGIN {FS = ":.*?\#\# "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 endif
 
+HELP_PROJECT=$(LOCAL_BIN)/grpc-server --help
+
 download-bin: ## Download library binaries
 	GOBIN=$(LOCAL_BIN) go install github.com/bufbuild/buf/cmd/buf@v1.29.0
 	GOBIN=$(LOCAL_BIN) go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
@@ -48,6 +50,9 @@ build: ## Build project
 
 run: ## Run project
 	$(LOCAL_BIN)/grpc-server
+
+run-with-migration: ## Run project with migration
+	$(LOCAL_BIN)/grpc-server -migration
 
 lint: ## Checking code with a linter
 	$(LOCAL_BIN)/golangci-lint run ./... --config .golangci.yaml
@@ -90,3 +95,5 @@ help: ## Show this help
 	@echo "Usage: make [target]"
 	@echo ""
 	@${HELP_CMD}
+	@echo ""
+	@${HELP_PROJECT}

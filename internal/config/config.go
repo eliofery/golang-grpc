@@ -3,7 +3,7 @@ package config
 import (
 	"log"
 
-	"github.com/eliofery/golang-fullstack/internal/cli"
+	"github.com/eliofery/golang-fullstack/docs/cli"
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
@@ -16,11 +16,11 @@ type Config struct {
 	Postgres `yaml:"postgres"`
 	Adminer  `yaml:"adminer"`
 
-	Cli cli.Options
+	Cli *cli.Options
 }
 
 // MustLoad ...
-func MustLoad(cmd cli.Options) *Config {
+func MustLoad(cmd *cli.Options) *Config {
 	var cfg Config
 	cfg.Cli = cmd
 

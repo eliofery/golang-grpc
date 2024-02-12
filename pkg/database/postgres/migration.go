@@ -1,10 +1,12 @@
 package postgres
 
 import (
-	"github.com/eliofery/golang-fullstack/internal"
+	"database/sql"
+	"log/slog"
+
+	"github.com/eliofery/golang-fullstack/docs"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
-	"log/slog"
 )
 
 const (
@@ -13,13 +15,12 @@ const (
 
 // Migrate ...
 func (p *Postgres) Migrate() error {
-	p.Logger.Info("is migrate", slog.Any("is migrate", p.Cli.IsMigration))
 	if !p.Cli.IsMigration {
 		return nil
 	}
 
 	goose.SetLogger(p.Logger)
-	goose.SetBaseFS(internal.EmbedMigration)
+	goose.SetBaseFS(docs.EmbedMigration)
 	defer goose.SetBaseFS(nil)
 
 	if err := goose.SetDialect(string(goose.DialectPostgres)); err != nil {
@@ -30,7 +31,12 @@ func (p *Postgres) Migrate() error {
 	if err := goose.Up(db, dirMigration); err != nil {
 		return err
 	}
-	defer db.Close()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			p.Logger.Error("failed to close database", slog.Any("err", err))
+		}
+	}(db)
 
 	return nil
 }

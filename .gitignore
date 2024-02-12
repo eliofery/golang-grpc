@@ -1,6 +1,6 @@
 .idea
 bin
-docs
+docs/microservice
 pkg/microservice
 
 .env

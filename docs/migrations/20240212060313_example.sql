@@ -1,8 +1,10 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE test (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255)
+    id serial primary key,
+    name varchar(255),
+    created_at timestamp not null default now(),
+    updated_at timestamp
 );
 -- +goose StatementEnd
 

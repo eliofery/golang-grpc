@@ -2,9 +2,9 @@ package postgres
 
 import (
 	"context"
-	"github.com/eliofery/golang-fullstack/pkg/eslog"
 
 	"github.com/eliofery/golang-fullstack/internal/config"
+	"github.com/eliofery/golang-fullstack/pkg/eslog"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
