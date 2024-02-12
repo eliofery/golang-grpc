@@ -47,11 +47,15 @@ func main() {
 	logger.Info("Info message")
 	logger.Warn("Warn message")
 	logger.Error("Error message")
-	logger.Fatal("Fatal message")
+	//logger.Fatal("Fatal message")
 
-	db := postgres.New(cfg)
+	db := postgres.New(cfg, logger)
 	if err := db.Connect(context.Background()); err != nil {
-		logger.Fatal("failed to connect database", slog.String("err", err.Error()))
+		logger.Fatal("failed to connect database", slog.Any("err", err))
+	}
+
+	if err := db.Migrate(); err != nil {
+		logger.Fatal("failed to migrate", slog.Any("err", err))
 	}
 
 	ch := make(chan error, 2)
@@ -105,7 +109,7 @@ func main() {
 
 	for i := 0; i < 2; i++ {
 		if err := <-ch; err != nil {
-			logger.Fatal("failed to start server", slog.String("err", err.Error()))
+			logger.Fatal("failed to start server", slog.Any("err", err))
 		}
 	}
 }

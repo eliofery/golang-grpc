@@ -6,7 +6,7 @@ include .env
 
 # Environments
 LOCAL_BIN=$(CURDIR)/bin
-LOCAL_MIGRATION_DIR=$(CURDIR)/migrations
+LOCAL_MIGRATION_DIR=$(CURDIR)/internal/migrations
 LOCAL_MIGRATION_DSN="postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@127.0.0.1:$(POSTGRES_PORT)/$(POSTGRES_DATABASE)?sslmode=disable"
 
 ifeq ($(OS), Windows_NT)

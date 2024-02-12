@@ -60,9 +60,14 @@ func (h *Handler) Handle(_ context.Context, r slog.Record) error {
 
 	var result string
 	if h.SlogOptions.AddSource {
-		result = fmt.Sprintf("%s %s %s %s %s", time, level, source, message, attrs)
+		result = fmt.Sprintf("%s %s %s %s", time, level, source, message)
 	} else {
-		result = fmt.Sprintf("%s %s %s %s", time, level, message, attrs)
+		result = fmt.Sprintf("%s %s %s", time, level, message)
+	}
+
+	// One - {, two - }
+	if len(attrs) > 2 {
+		result = fmt.Sprintf("%s %s", result, attrs)
 	}
 
 	if h.JSON {

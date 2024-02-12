@@ -87,7 +87,7 @@ func (h *Handler) message(r slog.Record) string {
 		return r.Message
 	}
 
-	return color.CyanString(r.Message)
+	return color.HiWhiteString(r.Message)
 }
 
 func (h *Handler) attrs(r slog.Record) string {

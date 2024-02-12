@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"github.com/eliofery/golang-fullstack/pkg/eslog"
 
 	"github.com/eliofery/golang-fullstack/internal/config"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -11,11 +12,15 @@ import (
 type Postgres struct {
 	*pgxpool.Pool
 	*config.Config
+	*eslog.Logger
 }
 
 // New ...
-func New(cfg *config.Config) *Postgres {
-	return &Postgres{Config: cfg}
+func New(cfg *config.Config, logger *eslog.Logger) *Postgres {
+	return &Postgres{
+		Config: cfg,
+		Logger: logger,
+	}
 }
 
 // Connect ...

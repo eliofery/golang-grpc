@@ -15,11 +15,14 @@ type Config struct {
 	Swagger  `yaml:"swagger"`
 	Postgres `yaml:"postgres"`
 	Adminer  `yaml:"adminer"`
+
+	Cli cli.Options
 }
 
 // MustLoad ...
 func MustLoad(cmd cli.Options) *Config {
 	var cfg Config
+	cfg.Cli = cmd
 
 	if err := cleanenv.ReadConfig(cmd.EnvPath, &cfg); err != nil {
 		log.Printf("cannot read env config file: %s", err)

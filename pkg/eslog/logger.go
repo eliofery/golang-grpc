@@ -22,9 +22,11 @@ package eslog
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
@@ -92,4 +94,24 @@ func (l *Logger) Fatal(msg string, args ...any) {
 	l.log(LevelFatal, msg, args...)
 
 	os.Exit(1)
+}
+
+// Sprintf ...
+func (l *Logger) Sprintf(msg string, args ...any) string {
+	return fmt.Sprintf(msg, args...)
+}
+
+// Fatalf logs at LevelFatal.
+func (l *Logger) Fatalf(msg string, args ...any) {
+	l.Fatal(l.Sprintf(l.removeLineBreak(msg), args...))
+}
+
+// Printf logs at LevelInfo.
+func (l *Logger) Printf(msg string, args ...any) {
+	l.log(slog.LevelInfo, l.Sprintf(l.removeLineBreak(msg), args...))
+}
+
+// removeLineBreak ...
+func (l *Logger) removeLineBreak(msg string) string {
+	return strings.Replace(msg, "\n", " ", -1)
 }
