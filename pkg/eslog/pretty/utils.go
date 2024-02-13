@@ -71,7 +71,8 @@ func (h *Handler) source(r slog.Record, rep AttrFn) string {
 
 		pwd, _ := os.Getwd()
 		relPath, _ := filepath.Rel(pwd, src.File)
-		pathSource = fmt.Sprintf("%s:%d", relPath, src.Line)
+		basePath := filepath.Base(relPath)
+		pathSource = fmt.Sprintf("%s:%d", basePath, src.Line)
 
 		if rep != nil {
 			if attr := rep(nil, slog.Any(slog.SourceKey, src)); attr.Key != "" {

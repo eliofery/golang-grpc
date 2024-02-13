@@ -51,6 +51,11 @@ func (c *Config) LoggerHandler() slog.Handler {
 	})
 }
 
+// NewLogger ...
+func (c *Config) NewLogger() *eslog.Logger {
+	return eslog.New(c.LoggerHandler(), c.LoggerLevelVar())
+}
+
 // LoggerLevel ...
 func (c *Config) LoggerLevel() slog.Level {
 	level, ok := LevelNames[c.Level]
