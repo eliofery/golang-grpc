@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -64,4 +65,16 @@ func replaceTime(a slog.Attr) slog.Attr {
 	a.Value = slog.StringValue(formattedTime)
 
 	return a
+}
+
+// stackFormat ...
+func stackFormat(stack string) []string {
+	stack = strings.ReplaceAll(stack, "\t", " ")
+	s := strings.Split(stack, "\n")
+
+	if s[len(s)-1] == "" {
+		s = s[:len(s)-1]
+	}
+
+	return s
 }

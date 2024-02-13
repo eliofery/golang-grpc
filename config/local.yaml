@@ -1,7 +1,9 @@
 env: "local"
 
 logger:
-    level: debug
+    level: trace
+    add-source: true
+    json: false
 
 server:
   host: "localhost"

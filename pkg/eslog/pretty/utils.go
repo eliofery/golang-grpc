@@ -14,7 +14,10 @@ import (
 	"github.com/fatih/color"
 )
 
-func (h *Handler) dateTime(r slog.Record, rep eslog.AttrFn) string {
+// AttrFn ...
+type AttrFn func(groups []string, attr slog.Attr) slog.Attr
+
+func (h *Handler) dateTime(r slog.Record, rep AttrFn) string {
 	timeStr := r.Time.Format(time.DateTime)
 	if h.JSON {
 		timeStr = r.Time.Format(time.RFC3339Nano)
@@ -33,7 +36,7 @@ func (h *Handler) dateTime(r slog.Record, rep eslog.AttrFn) string {
 	return color.WhiteString(timeStr)
 }
 
-func (h *Handler) level(r slog.Record, rep eslog.AttrFn) string {
+func (h *Handler) level(r slog.Record, rep AttrFn) string {
 	level, ok := eslog.LevelNames[r.Level]
 	if !ok {
 		level = r.Level.String()
@@ -52,7 +55,7 @@ func (h *Handler) level(r slog.Record, rep eslog.AttrFn) string {
 	return eslog.LevelColor[r.Level](level)
 }
 
-func (h *Handler) source(r slog.Record, rep eslog.AttrFn) string {
+func (h *Handler) source(r slog.Record, rep AttrFn) string {
 	var pathSource string
 
 	if h.SlogOptions.AddSource {
@@ -68,8 +71,7 @@ func (h *Handler) source(r slog.Record, rep eslog.AttrFn) string {
 
 		pwd, _ := os.Getwd()
 		relPath, _ := filepath.Rel(pwd, src.File)
-		basePath := filepath.Base(relPath)
-		pathSource = fmt.Sprintf("%s:%d", basePath, src.Line)
+		pathSource = fmt.Sprintf("%s:%d", relPath, src.Line)
 
 		if rep != nil {
 			if attr := rep(nil, slog.Any(slog.SourceKey, src)); attr.Key != "" {

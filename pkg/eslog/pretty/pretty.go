@@ -10,8 +10,6 @@ import (
 	"log"
 	"log/slog"
 	"strings"
-
-	"github.com/eliofery/golang-fullstack/pkg/eslog"
 )
 
 // jsonResult ...
@@ -36,7 +34,7 @@ type Handler struct {
 }
 
 // NewHandler ...
-func NewHandler(out io.Writer, opts *HandlerOptions) eslog.Handler {
+func NewHandler(out io.Writer, opts *HandlerOptions) slog.Handler {
 	if opts == nil {
 		opts = &HandlerOptions{}
 	}

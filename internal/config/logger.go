@@ -2,11 +2,14 @@ package config
 
 import (
 	"log/slog"
+	"os"
 
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
+	"github.com/eliofery/golang-fullstack/pkg/eslog/pretty"
 )
 
 const (
+	logNameTrace = "trace"
 	logNameDebug = "debug"
 	logNameInfo  = "info"
 	logNameWarn  = "warn"
@@ -17,6 +20,7 @@ const (
 var (
 	// LevelNames ...
 	LevelNames = map[string]slog.Level{
+		logNameTrace: eslog.LevelTrace,
 		logNameDebug: slog.LevelDebug,
 		logNameInfo:  slog.LevelInfo,
 		logNameWarn:  slog.LevelWarn,
@@ -30,13 +34,26 @@ var (
 // Logger ...
 type Logger struct {
 	// Level log level
-	// debug, info, warn, error, fatal
-	Level string `yaml:"level" env-default:"debug"`
+	// trace, debug, info, warn, error, fatal
+	Level     string `yaml:"level" env-default:"debug"`
+	AddSource bool   `yaml:"add-source" env-default:"true"`
+	JSON      bool   `yaml:"json" env-default:"false"`
 }
 
-// LogLevel ...
-func (l *Logger) LogLevel() slog.Level {
-	level, ok := LevelNames[l.Level]
+// LoggerHandler ...
+func (c *Config) LoggerHandler() slog.Handler {
+	return pretty.NewHandler(os.Stdout, &pretty.HandlerOptions{
+		SlogOptions: &slog.HandlerOptions{
+			Level:     c.LoggerLevel(),
+			AddSource: c.AddSource,
+		},
+		JSON: c.JSON,
+	})
+}
+
+// LoggerLevel ...
+func (c *Config) LoggerLevel() slog.Level {
+	level, ok := LevelNames[c.Level]
 	if !ok {
 		level = LevelNames[logNameInfo]
 	}
@@ -44,11 +61,11 @@ func (l *Logger) LogLevel() slog.Level {
 	return level
 }
 
-// LevelVar ...
-func (l *Logger) LevelVar() *slog.LevelVar {
+// LoggerLevelVar ...
+func (c *Config) LoggerLevelVar() *slog.LevelVar {
 	if levelVar == nil {
 		levelVar = new(slog.LevelVar)
-		levelVar.Set(l.LogLevel())
+		levelVar.Set(c.LoggerLevel())
 	}
 
 	return levelVar
