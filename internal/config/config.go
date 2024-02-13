@@ -1,8 +1,6 @@
 package config
 
 import (
-	"log"
-
 	"github.com/eliofery/golang-fullstack/docs/cli"
 	"github.com/ilyakaznacheev/cleanenv"
 )
@@ -19,18 +17,18 @@ type Config struct {
 	Cli *cli.Options
 }
 
-// MustLoad ...
-func MustLoad(cmd *cli.Options) *Config {
+// New ...
+func New(cmd *cli.Options) (*Config, error) {
 	var cfg Config
 	cfg.Cli = cmd
 
 	if err := cleanenv.ReadConfig(cmd.EnvPath, &cfg); err != nil {
-		log.Printf("cannot read env config file: %s", err)
+		return nil, err
 	}
 
 	if err := cleanenv.ReadConfig(cmd.YamlPath, &cfg); err != nil {
-		log.Fatalf("cannot read yaml config file: %s", err)
+		return nil, err
 	}
 
-	return &cfg
+	return &cfg, nil
 }

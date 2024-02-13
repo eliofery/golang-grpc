@@ -51,6 +51,11 @@ func init() {
 	flag.Parse()
 }
 
+// New ...
+func New() *Options {
+	return &Option
+}
+
 // getText ...
 func (o *Options) getText(fileName string) string {
 	fullPath := filepath.Clean(filepath.Join(cliDirPath, fileName))
