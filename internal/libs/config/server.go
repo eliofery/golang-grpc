@@ -32,11 +32,11 @@ type Server struct {
 }
 
 // GRPCAddress ...
-func (c *Config) GRPCAddress() string {
-	return net.JoinHostPort(c.Server.Host, strconv.Itoa(c.Server.GRPC.Port))
+func (s *Server) GRPCAddress() string {
+	return net.JoinHostPort(s.Host, strconv.Itoa(s.GRPC.Port))
 }
 
 // RESTAddress ...
-func (c *Config) RESTAddress() string {
-	return net.JoinHostPort(c.Server.Host, strconv.Itoa(c.Server.REST.Port))
+func (s *Server) RESTAddress() string {
+	return net.JoinHostPort(s.Host, strconv.Itoa(s.REST.Port))
 }

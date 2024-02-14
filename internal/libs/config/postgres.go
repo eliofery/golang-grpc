@@ -13,13 +13,13 @@ type Postgres struct {
 }
 
 // DSN ...
-func (c *Config) DSN() string {
+func (p *Postgres) DSN() string {
 	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
-		c.Postgres.Host,
-		c.Postgres.Port,
-		c.Postgres.User,
-		c.Postgres.Password,
-		c.Postgres.Database,
-		c.Postgres.SSLMode,
+		p.Host,
+		p.Port,
+		p.User,
+		p.Password,
+		p.Database,
+		p.SSLMode,
 	)
 }
