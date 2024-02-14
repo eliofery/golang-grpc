@@ -1,16 +1,18 @@
 syntax = "proto3";
 
-package microservice.v1;
+package microservice.user.v2;
 
 import "google/api/annotations.proto";
-import "microservice/v1/user.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
+import "microservice/user/v2/request.proto";
+import "microservice/user/v2/response.proto";
 
-option go_package = "github.com/eliofery/golang-fullstack/pkg/microservice/v1";
+option go_package = "github.com/eliofery/golang-fullstack/pkg/microservice/user/v2";
+
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
     title: "Главный заголовок API";
-    version: "1.0";
+    version: "2.0";
     description: "Основное описание API";
     contact: {
       name: "Название проекта, Имя автора";
@@ -37,16 +39,16 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   ]; // response
 };
 
-service MicroService {
-  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+service UserV2Service {
+  rpc Get(GetRequest) returns (GetResponse) {
     option (google.api.http) = {
-      post: "/v1/user"
+      post: "/v2/user"
       body: "*"
     };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Получение данных пользователя по его ID";
-      operation_id: "getUser";
+      operation_id: "Get";
       responses: {
         key: "200"
         value: {description: "OK Success"}
