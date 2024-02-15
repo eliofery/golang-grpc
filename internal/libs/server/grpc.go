@@ -1,6 +1,9 @@
 package server
 
 import (
+	"log/slog"
+	"net"
+
 	userServiceV1 "github.com/eliofery/golang-fullstack/internal/app/api/microservice/user/v1"
 	"github.com/eliofery/golang-fullstack/internal/libs/config"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
@@ -8,8 +11,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
-	"log/slog"
-	"net"
 )
 
 // GRPC ...

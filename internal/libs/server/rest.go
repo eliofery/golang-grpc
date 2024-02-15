@@ -2,14 +2,15 @@ package server
 
 import (
 	"context"
+	"log/slog"
+	"net/http"
+
 	"github.com/eliofery/golang-fullstack/internal/libs/config"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
 	desc "github.com/eliofery/golang-fullstack/pkg/microservice/user/v1"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"log/slog"
-	"net/http"
 )
 
 // REST ...

@@ -1,10 +1,10 @@
 package logger
 
 import (
-	"github.com/eliofery/golang-fullstack/internal/libs/config"
 	"log/slog"
 	"os"
 
+	"github.com/eliofery/golang-fullstack/internal/libs/config"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
 	"github.com/eliofery/golang-fullstack/pkg/eslog/pretty"
 )
