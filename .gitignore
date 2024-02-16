@@ -1,7 +1,7 @@
 .idea
 bin
-docs/microservice
-pkg/microservice
+docs/api
+pkg/api
 
 .env
 prod.env

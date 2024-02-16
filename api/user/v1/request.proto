@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package microservice.user.v1;
+package user.v1;
 
-option go_package = "github.com/eliofery/golang-fullstack/pkg/microservice/user/v1";
+option go_package = "github.com/eliofery/golang-fullstack/pkg/api/user/v1";
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "buf/validate/validate.proto";
@@ -25,5 +25,6 @@ message GetRequest {
     string email = 2 [
         (buf.validate.field).string.email = true
     ];
+    string password = 3;
 }
 

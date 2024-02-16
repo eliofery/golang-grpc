@@ -56,6 +56,7 @@ run-with-migration: ## Run project with migration
 
 lint: ## Checking code with a linter
 	$(LOCAL_BIN)/golangci-lint run ./... --config .golangci.yaml
+	$(LOCAL_BIN)/buf lint
 
 generate: ## Generating code from protobuf files
 	$(LOCAL_BIN)/buf generate

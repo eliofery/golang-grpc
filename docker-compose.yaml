@@ -13,7 +13,7 @@ services:
     ports:
       - "${SWAGGER_UI_PORT}:8080"
     volumes:
-      - ./docs/microservice:/usr/share/nginx/html/docs
+      - ./docs/api:/usr/share/nginx/html/docs
     environment:
       URLS: "[
         {url: '/docs/user/v1/service.swagger.json', name: 'User API v1.0'},
