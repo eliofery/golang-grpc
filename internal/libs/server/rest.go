@@ -7,73 +7,67 @@ import (
 
 	"github.com/eliofery/golang-fullstack/internal/libs/config"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
-	desc "github.com/eliofery/golang-fullstack/pkg/microservice/user/v1"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"go.uber.org/fx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// REST ...
-type REST struct {
-	server *runtime.ServeMux
-	config *config.Config
-	logger *eslog.Logger
-}
-
 // NewREST ...
-func NewREST(config *config.Config, logger *eslog.Logger) *REST {
-	return &REST{
-		config: config,
-		logger: logger,
-	}
-}
-
-// Init ...
-func (r *REST) Init() error {
-	r.server = runtime.NewServeMux()
+func NewREST(config *config.Config) (*runtime.ServeMux, string, []grpc.DialOption) {
+	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	}
 
-	err := desc.RegisterUserV1ServiceHandlerFromEndpoint(context.Background(), r.server, r.config.Server.RESTAddress(), opts)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return mux, config.GRPCAddress(), opts
 }
 
-// Run ...
-func (r *REST) Run() error {
+// InvokeREST ...
+func InvokeREST(lc fx.Lifecycle, mux *runtime.ServeMux, config *config.Config, logger *eslog.Logger) {
 	server := &http.Server{
-		Addr:         r.config.Server.RESTAddress(),
-		Handler:      r.server, //handler := allowCORS(mux)
-		ReadTimeout:  r.config.Server.Read,
-		WriteTimeout: r.config.Server.Write,
-		IdleTimeout:  r.config.Server.Idle,
-	}
-	_ = server
-
-	r.logger.Info("REST server start", slog.String("rest", r.config.Server.RESTAddress()))
-	if err := server.ListenAndServe(); err != nil {
-		return err
+		Addr:         config.RESTAddress(),
+		Handler:      allowCORS(mux),
+		ReadTimeout:  config.Read,
+		WriteTimeout: config.Write,
+		IdleTimeout:  config.Idle,
 	}
 
-	return nil
+	lc.Append(fx.Hook{
+		OnStart: func(_ context.Context) error {
+			errCh := make(chan error)
+			go func() {
+				logger.Info("REST server start", slog.String("address", config.Server.RESTAddress()))
+				if err := server.ListenAndServe(); err != nil {
+					errCh <- err
+				}
+			}()
+
+			select {
+			case err := <-errCh:
+				return err
+			default:
+				return nil
+			}
+		},
+		OnStop: func(ctx context.Context) error {
+			return server.Shutdown(ctx)
+		},
+	})
 }
 
 // allowCORS ...
-//func allowCORS(handler http.Handler) http.Handler {
-//    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//        w.Header().Set("Access-Control-Allow-Origin", "*")
-//        w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-//        w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-//
-//        if r.Method == "OPTIONS" {
-//            w.WriteHeader(http.StatusNoContent)
-//            return
-//        }
-//
-//        handler.ServeHTTP(w, r)
-//    })
-//}
+func allowCORS(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		handler.ServeHTTP(w, r)
+	})
+}

@@ -1,9 +1,8 @@
-package userrepositoryv1
+package userv1
 
 import (
-	"github.com/jackc/pgx/v5/pgxpool"
-
 	"github.com/eliofery/golang-fullstack/internal/app/repository/user/v1/model"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 // Repository ...
@@ -16,9 +15,7 @@ type repository struct {
 }
 
 // New ...
-func New(
-	conn *pgxpool.Pool,
-) Repository {
+func New(conn *pgxpool.Pool) Repository {
 	return &repository{
 		conn: conn,
 	}

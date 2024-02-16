@@ -1,4 +1,4 @@
-package userservicev1
+package userv1
 
 import (
 	"context"
@@ -6,6 +6,6 @@ import (
 	desc "github.com/eliofery/golang-fullstack/pkg/api/user/v1"
 )
 
-func (s *service) Get(context.Context, *desc.GetRequest) (*desc.GetResponse, error) {
+func (s *service) Get(_ context.Context, _ *desc.GetRequest) (*desc.GetResponse, error) {
 	return nil, nil
 }

@@ -1,4 +1,4 @@
-package userrepositoryv1
+package userv1
 
 import "github.com/eliofery/golang-fullstack/internal/app/repository/user/v1/model"
 

@@ -1,9 +1,9 @@
-package userservicev1
+package userv1
 
 import (
 	"context"
 
-	userrepositoryv1 "github.com/eliofery/golang-fullstack/internal/app/repository/user/v1"
+	userv1 "github.com/eliofery/golang-fullstack/internal/app/repository/user/v1"
 
 	desc "github.com/eliofery/golang-fullstack/pkg/api/user/v1"
 )
@@ -14,13 +14,11 @@ type Service interface {
 }
 
 type service struct {
-	userRepository userrepositoryv1.Repository
+	userRepository userv1.Repository
 }
 
 // New ...
-func New(
-	userRepository userrepositoryv1.Repository,
-) Service {
+func New(userRepository userv1.Repository) Service {
 	return &service{
 		userRepository: userRepository,
 	}

@@ -1,4 +1,4 @@
-package apiuserv1
+package userv1
 
 import (
 	"context"

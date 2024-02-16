@@ -4,6 +4,8 @@ import (
 	"log/slog"
 	"os"
 
+	"go.uber.org/fx/fxevent"
+
 	"github.com/eliofery/golang-fullstack/internal/libs/config"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
 	"github.com/eliofery/golang-fullstack/pkg/eslog/pretty"
@@ -23,6 +25,11 @@ func New(config *config.Config) *eslog.Logger {
 	level := logger.levelVar()
 
 	return eslog.New(handler, level)
+}
+
+// WithLogger ...
+func WithLogger(config *config.Config) fxevent.Logger {
+	return New(config)
 }
 
 // Handler ...
