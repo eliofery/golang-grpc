@@ -1,7 +1,10 @@
-env: "prod"
+app:
+  env: "prod"
 
 logger:
   level: info
+  add-source: false
+  json: true
 
 server:
   host: "localhost"

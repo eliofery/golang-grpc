@@ -1,9 +1,10 @@
-env: "local"
+app:
+  env: "local"
 
 logger:
-    level: debug
-    add-source: true
-    json: false
+  level: debug
+  add-source: true
+  json: false
 
 server:
   host: "localhost"
