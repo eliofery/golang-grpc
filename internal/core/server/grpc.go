@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/eliofery/golang-fullstack/internal/interceptor"
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -18,6 +19,7 @@ type GRPC struct {
 func NewGRPC() GRPC {
 	server := grpc.NewServer(
 		grpc.Creds(insecure.NewCredentials()),
+		grpc.UnaryInterceptor(interceptor.Validate),
 	)
 
 	return GRPC{

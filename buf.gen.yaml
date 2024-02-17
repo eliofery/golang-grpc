@@ -1,5 +1,12 @@
 version: v1
 
+#managed:
+#  enabled: true
+#  go_package_prefix:
+#    default: github.com/eliofery/golang-fullstack
+#    except:
+#      - buf.build/bufbuild/protovalidate
+
 plugins:
   - name: go
     path: ./bin/protoc-gen-go

@@ -81,8 +81,8 @@ bump: ## Update packages version
 
 clean: ## Clear the project
 	rm -rf $(LOCAL_BIN)
-	rm -rf pkg/microservice
-	rm -rf docs
+	rm -rf pkg/api
+	rm -rf docs/api
 
 about: ## Display info related to the build
 	@echo "OS: $(OS)"
