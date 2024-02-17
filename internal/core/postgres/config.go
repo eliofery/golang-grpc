@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/eliofery/golang-fullstack/internal/app"
+	"github.com/eliofery/golang-fullstack/internal/core"
 	"go.uber.org/config"
 )
 
-const loggerKeyName = "postgres"
+const postgresKeyName = "postgres"
 
 // Config ...
 type Config struct {
@@ -19,10 +19,10 @@ type Config struct {
 }
 
 // NewConfig ...
-func NewConfig(cli *app.Options, provider config.Provider) (*Config, error) {
+func NewConfig(cli *core.Options, provider config.Provider) (*Config, error) {
 	var conf Config
 	conf.IsMigration = cli.Migration.IsMigration
-	if err := provider.Get(loggerKeyName).Populate(&conf); err != nil {
+	if err := provider.Get(postgresKeyName).Populate(&conf); err != nil {
 		return nil, fmt.Errorf("failed to populate postgres config: %w", err)
 	}
 

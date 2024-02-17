@@ -1,11 +1,11 @@
-package apiuserv2
+package api
 
 import (
 	"context"
 
 	"github.com/golang/protobuf/ptypes/wrappers"
 
-	desc "github.com/eliofery/golang-fullstack/pkg/api/user/v2"
+	desc "github.com/eliofery/golang-fullstack/pkg/api/user/v1"
 )
 
 // Get ...

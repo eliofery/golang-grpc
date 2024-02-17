@@ -9,6 +9,8 @@ import (
 	"go.uber.org/config"
 )
 
+const serverKeyName = "server"
+
 // Timeout ...
 type Timeout struct {
 	Read  time.Duration `yaml:"read"`
@@ -37,7 +39,7 @@ type Config struct {
 // NewConfig ...
 func NewConfig(provider config.Provider) (*Config, error) {
 	var conf Config
-	if err := provider.Get("server").Populate(&conf); err != nil {
+	if err := provider.Get(serverKeyName).Populate(&conf); err != nil {
 		return nil, fmt.Errorf("failed to populate server config: %w", err)
 	}
 

@@ -1,10 +1,9 @@
-package userv1
+package repository
 
 import (
+	"github.com/eliofery/golang-fullstack/internal/core/postgres"
+	"github.com/eliofery/golang-fullstack/internal/v1app/user/model"
 	"github.com/jackc/pgx/v5/pgxpool"
-
-	"github.com/eliofery/golang-fullstack/internal/app/postgres"
-	"github.com/eliofery/golang-fullstack/internal/repository/user/v1/model"
 )
 
 // Repository ...
@@ -21,9 +20,4 @@ func New(pg *postgres.Postgres) Repository {
 	return &repository{
 		conn: pg.DB(),
 	}
-}
-
-// Get ...
-func (r *repository) Get(_ int64) (*model.User, error) {
-	return nil, nil
 }

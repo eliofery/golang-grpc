@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/eliofery/golang-fullstack/internal/app/server/v1api"
+	"github.com/eliofery/golang-fullstack/internal/v1app"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"go.uber.org/fx"
@@ -15,7 +15,7 @@ import (
 func NewRESTModule() fx.Option {
 	return fx.Module("rest",
 		fx.Invoke(
-			v1api.RegisterServiceHandlerFromEndpoints...,
+			v1app.RegisterServiceHandlerFromEndpoints...,
 		//v2api.RegisterServiceHandlerFromEndpoints...,
 		),
 		fx.Invoke(

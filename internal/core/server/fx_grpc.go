@@ -5,11 +5,10 @@ import (
 	"log/slog"
 	"net"
 
-	"google.golang.org/grpc"
-
-	"github.com/eliofery/golang-fullstack/internal/app/server/v1api"
+	"github.com/eliofery/golang-fullstack/internal/v1app"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
 	"go.uber.org/fx"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -17,7 +16,7 @@ import (
 func NewGRPCModule() fx.Option {
 	return fx.Module("grpc",
 		fx.Invoke(
-			v1api.RegisterServiceServers...,
+			v1app.RegisterServiceServers...,
 		//v2api.RegisterServiceServers...,
 		),
 		fx.Invoke(

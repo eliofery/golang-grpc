@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/eliofery/golang-fullstack/internal/app/server/v1api"
+	"github.com/eliofery/golang-fullstack/internal/v1app"
 	"go.uber.org/fx"
 )
 
@@ -14,8 +14,8 @@ func NewModule() fx.Option {
 			NewREST,
 		),
 		fx.Options(
-			v1api.NewModule(),
-			//v2api.NewModule(),
+			v1app.NewModule(),
+			//v2app.NewModule(),
 
 			NewGRPCModule(),
 			NewRESTModule(),

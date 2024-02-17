@@ -1,9 +1,9 @@
-package userv1
+package service
 
 import (
 	"context"
 
-	userv1 "github.com/eliofery/golang-fullstack/internal/repository/user/v1"
+	userv1 "github.com/eliofery/golang-fullstack/internal/v1app/user/repository"
 	desc "github.com/eliofery/golang-fullstack/pkg/api/user/v1"
 )
 
@@ -21,9 +21,4 @@ func New(userRepository userv1.Repository) Service {
 	return &service{
 		userRepository: userRepository,
 	}
-}
-
-// Get ...
-func (s service) Get(_ context.Context, _ *desc.GetRequest) (*desc.GetResponse, error) {
-	return nil, nil
 }

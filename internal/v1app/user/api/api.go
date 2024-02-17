@@ -1,7 +1,7 @@
-package userv1
+package api
 
 import (
-	userv1 "github.com/eliofery/golang-fullstack/internal/service/user/v1"
+	userv1 "github.com/eliofery/golang-fullstack/internal/v1app/user/service"
 	desc "github.com/eliofery/golang-fullstack/pkg/api/user/v1"
 )
 

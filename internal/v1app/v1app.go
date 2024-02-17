@@ -1,6 +1,7 @@
-package v1api
+package v1app
 
 import (
+	"github.com/eliofery/golang-fullstack/internal/v1app/user"
 	desc "github.com/eliofery/golang-fullstack/pkg/api/user/v1"
 	"go.uber.org/fx"
 )
@@ -18,7 +19,7 @@ var RegisterServiceHandlerFromEndpoints = []any{
 // NewModule ...
 func NewModule() fx.Option {
 	return fx.Module("api_v1",
-		NewUserModule(),
+		user.NewUserModule(),
 		//NewOtherModule(),
 	)
 }
