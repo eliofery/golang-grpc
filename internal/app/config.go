@@ -2,7 +2,6 @@ package app
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -51,7 +50,7 @@ func NewConfig(cli *Options) (Config, error) {
 	var conf EnvConfig
 	conf.ENV = appENVDefault
 	if err = loader.Get(appKeyName).Populate(&conf); err != nil {
-		log.Fatalf("Failed to populate config: %s", err)
+		return Config{}, fmt.Errorf("error to populate main config: %w", err)
 	}
 
 	return Config{

@@ -1,27 +1,27 @@
 package server
 
 import (
+	"go.uber.org/fx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 // GRPC ...
 type GRPC struct {
-	grpc *grpc.Server
+	fx.Out
+
+	Server           *grpc.Server
+	ServiceRegistrar grpc.ServiceRegistrar
 }
 
 // NewGRPC ...
-func NewGRPC() *GRPC {
+func NewGRPC() GRPC {
 	server := grpc.NewServer(
 		grpc.Creds(insecure.NewCredentials()),
 	)
 
-	return &GRPC{
-		grpc: server,
+	return GRPC{
+		Server:           server,
+		ServiceRegistrar: server,
 	}
-}
-
-// GRPC ...
-func (s *GRPC) GRPC() *grpc.Server {
-	return s.grpc
 }

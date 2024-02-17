@@ -8,6 +8,8 @@ import (
 	"go.uber.org/config"
 )
 
+const loggerKeyName = "postgres"
+
 // Config ...
 type Config struct {
 	Host        string `yaml:"host"`
@@ -20,8 +22,8 @@ type Config struct {
 func NewConfig(cli *app.Options, provider config.Provider) (*Config, error) {
 	var conf Config
 	conf.IsMigration = cli.Migration.IsMigration
-	if err := provider.Get("postgres").Populate(&conf); err != nil {
-		return nil, fmt.Errorf("postgres config: %w", err)
+	if err := provider.Get(loggerKeyName).Populate(&conf); err != nil {
+		return nil, fmt.Errorf("failed to populate postgres config: %w", err)
 	}
 
 	return &conf, nil

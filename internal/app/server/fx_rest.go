@@ -9,26 +9,20 @@ import (
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"go.uber.org/fx"
-	"google.golang.org/grpc"
 )
 
 // NewRESTModule ...
 func NewRESTModule() fx.Option {
 	return fx.Module("rest",
-		fx.Provide(
-			func(server *REST, config *Config) (*runtime.ServeMux, string, []grpc.DialOption) {
-				return server.Mux(), config.GRPCAddress(), server.Opts()
-			},
-		),
 		fx.Invoke(
 			v1api.RegisterServiceHandlerFromEndpoints...,
 		//v2api.RegisterServiceHandlerFromEndpoints...,
 		),
 		fx.Invoke(
-			func(lc fx.Lifecycle, server *REST, config *Config, logger *eslog.Logger) {
+			func(lc fx.Lifecycle, mux *runtime.ServeMux, config *Config, logger *eslog.Logger) {
 				httpserv := &http.Server{
 					Addr:         config.RESTAddress(),
-					Handler:      allowCORS(server.mux),
+					Handler:      allowCORS(mux),
 					ReadTimeout:  config.Read,
 					WriteTimeout: config.Write,
 					IdleTimeout:  config.Idle,

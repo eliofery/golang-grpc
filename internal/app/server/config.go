@@ -38,7 +38,7 @@ type Config struct {
 func NewConfig(provider config.Provider) (*Config, error) {
 	var conf Config
 	if err := provider.Get("server").Populate(&conf); err != nil {
-		return nil, fmt.Errorf("server config: %w", err)
+		return nil, fmt.Errorf("failed to populate server config: %w", err)
 	}
 
 	return &conf, nil
