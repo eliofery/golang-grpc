@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/eliofery/golang-fullstack/internal/v1app"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
 	"go.uber.org/fx"
 )
@@ -13,10 +12,6 @@ import (
 // NewRESTModule ...
 func NewRESTModule() fx.Option {
 	return fx.Module("rest",
-		fx.Invoke(
-			v1app.RegisterServiceHandlerFromEndpoints...,
-		//v2api.RegisterServiceHandlerFromEndpoints...,
-		),
 		fx.Invoke(
 			func(lc fx.Lifecycle, handler http.Handler, config *Config, logger *eslog.Logger) {
 				httpserv := &http.Server{

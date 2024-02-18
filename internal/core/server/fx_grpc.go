@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"net"
 
-	"github.com/eliofery/golang-fullstack/internal/v1app"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
@@ -15,10 +14,6 @@ import (
 // NewGRPCModule ...
 func NewGRPCModule() fx.Option {
 	return fx.Module("grpc",
-		fx.Invoke(
-			v1app.RegisterServiceServers...,
-		//v2api.RegisterServiceServers...,
-		),
 		fx.Invoke(
 			func(lc fx.Lifecycle, server *grpc.Server, config *Config, logger *eslog.Logger) {
 				lc.Append(fx.Hook{
