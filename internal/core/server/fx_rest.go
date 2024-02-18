@@ -7,7 +7,6 @@ import (
 
 	"github.com/eliofery/golang-fullstack/internal/v1app"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"go.uber.org/fx"
 )
 
@@ -19,10 +18,10 @@ func NewRESTModule() fx.Option {
 		//v2api.RegisterServiceHandlerFromEndpoints...,
 		),
 		fx.Invoke(
-			func(lc fx.Lifecycle, mux *runtime.ServeMux, config *Config, logger *eslog.Logger) {
+			func(lc fx.Lifecycle, handler http.Handler, config *Config, logger *eslog.Logger) {
 				httpserv := &http.Server{
 					Addr:         config.RESTAddress(),
-					Handler:      allowCORS(mux),
+					Handler:      handler,
 					ReadTimeout:  config.Read,
 					WriteTimeout: config.Write,
 					IdleTimeout:  config.Idle,
@@ -52,20 +51,4 @@ func NewRESTModule() fx.Option {
 			},
 		),
 	)
-}
-
-// allowCORS ...
-func allowCORS(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-
-		handler.ServeHTTP(w, r)
-	})
 }

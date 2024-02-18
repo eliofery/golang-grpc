@@ -12,6 +12,9 @@ server:
     read: 5s
     write: 5s
     idle: 15s
+  cors:
+    origin: "https://site:org"
+    max-age: 3600
   grpc:
     port: 50051
   rest:

@@ -5,6 +5,8 @@ import (
 
 	"github.com/bufbuild/protovalidate-go"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -22,7 +24,7 @@ func Validate(
 
 	if msg, ok := req.(proto.Message); ok {
 		if err = v.Validate(msg); err != nil {
-			return nil, err
+			return nil, status.Error(codes.InvalidArgument, err.Error())
 		}
 	}
 

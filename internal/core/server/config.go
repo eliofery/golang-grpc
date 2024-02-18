@@ -18,6 +18,12 @@ type Timeout struct {
 	Idle  time.Duration `yaml:"idle"`
 }
 
+// CORS ...
+type CORS struct {
+	Origin string `yaml:"origin"`
+	MaxAge string `yaml:"max-age"`
+}
+
 // ServGRPC ...
 type ServGRPC struct {
 	Port int `yaml:"port"`
@@ -32,6 +38,7 @@ type ServREST struct {
 type Config struct {
 	Host     string `yaml:"host"`
 	Timeout  `yaml:"timeout"`
+	CORS     `yaml:"cors"`
 	ServGRPC `yaml:"grpc"`
 	ServREST `yaml:"rest"`
 }
