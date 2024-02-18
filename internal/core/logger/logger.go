@@ -4,45 +4,49 @@ import (
 	"log/slog"
 	"os"
 
+	"go.uber.org/fx"
+	"go.uber.org/fx/fxevent"
+
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
 	"github.com/eliofery/golang-fullstack/pkg/eslog/pretty"
-	"go.uber.org/fx/fxevent"
 )
 
 // Logger ...
 type Logger struct {
-	config *Config
+	fx.Out
+
+	slog.Handler
+	*slog.LevelVar
 }
 
 // New ...
-func New(config *Config) *eslog.Logger {
-	logger := Logger{
-		config: config,
+func New(config *Config) Logger {
+	return Logger{
+		Handler:  handler(config),
+		LevelVar: levelVar(config),
 	}
-
-	return eslog.New(logger.handler(), logger.levelVar())
 }
 
 // WithLogger ...
-func WithLogger(config *Config) fxevent.Logger {
-	return New(config)
+func WithLogger(log *eslog.Logger) fxevent.Logger {
+	return log
 }
 
 // Handler ...
-func (l *Logger) handler() slog.Handler {
+func handler(config *Config) slog.Handler {
 	return pretty.NewHandler(os.Stdout, &pretty.HandlerOptions{
 		SlogOptions: &slog.HandlerOptions{
-			Level:     l.config.Leveler(),
-			AddSource: l.config.AddSource,
+			Level:     config.Leveler(),
+			AddSource: config.AddSource,
 		},
-		JSON: l.config.JSON,
+		JSON: config.JSON,
 	})
 }
 
 // LevelVar ...
-func (l *Logger) levelVar() *slog.LevelVar {
+func levelVar(config *Config) *slog.LevelVar {
 	levelVar := new(slog.LevelVar)
-	levelVar.Set(l.config.Leveler())
+	levelVar.Set(config.Leveler())
 
 	return levelVar
 }

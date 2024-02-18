@@ -16,10 +16,9 @@ func main() {
 			core.NewContext,
 			core.NewCli,
 			core.NewConfig,
-			logger.NewConfig,
-			logger.New,
 		),
 		fx.Options(
+			logger.NewModule(),
 			postgres.NewModule(),
 			server.NewModule(),
 		),
