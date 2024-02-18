@@ -41,6 +41,7 @@ download-bin: ## Download library binaries
 	GOBIN=$(LOCAL_BIN) go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@v2.19.1
 	GOBIN=$(LOCAL_BIN) go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.56.2
 	GOBIN=$(LOCAL_BIN) go install github.com/pressly/goose/v3/cmd/goose@v3.18.0
+	GOBIN=$(LOCAL_BIN) go install github.com/cortesi/modd/cmd/modd@v0.8
 
 build: ## Build project
 	make clean
@@ -50,6 +51,9 @@ build: ## Build project
 
 run: ## Run project
 	$(LOCAL_BIN)/grpc-server
+
+run-dev: ## Run project in development mode
+	$(LOCAL_BIN)/modd
 
 run-with-migration: ## Run project with migration
 	$(LOCAL_BIN)/grpc-server -migration
