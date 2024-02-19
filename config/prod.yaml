@@ -6,8 +6,13 @@ logger:
   add-source: false
   json: true
 
-server:
+grpc:
   host: "localhost"
+  port: 50051
+
+rest:
+  host: "localhost"
+  port: 8080
   timeout:
     read: 5s
     write: 5s
@@ -15,10 +20,6 @@ server:
   cors:
     origin: "https://site:org"
     max-age: 3600
-  grpc:
-    port: 50051
-  rest:
-    port: 8080
 
 swagger:
   editor:

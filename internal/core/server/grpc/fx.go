@@ -1,4 +1,4 @@
-package server
+package grpc
 
 import (
 	"context"
@@ -11,23 +11,29 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-// NewGRPCModule ...
-func NewGRPCModule() fx.Option {
+// NewModule ...
+func NewModule() fx.Option {
 	return fx.Module("grpc",
+		fx.Provide(
+			NewConfig,
+			NewInterceptor,
+			NewOption,
+			New,
+		),
 		fx.Invoke(
 			func(lc fx.Lifecycle, server *grpc.Server, config *Config, logger *eslog.Logger) {
 				lc.Append(fx.Hook{
 					OnStart: func(_ context.Context) error {
 						reflection.Register(server)
 
-						list, err := net.Listen("tcp", config.GRPCAddress())
+						list, err := net.Listen("tcp", config.Address())
 						if err != nil {
 							return err
 						}
 
 						errCh := make(chan error)
 						go func() {
-							logger.Info("GRPC server start", slog.String("address", config.GRPCAddress()))
+							logger.Info("GRPC server start", slog.String("address", config.Address()))
 							if err = server.Serve(list); err != nil {
 								errCh <- err
 							}

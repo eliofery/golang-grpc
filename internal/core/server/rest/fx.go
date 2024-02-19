@@ -1,4 +1,4 @@
-package server
+package rest
 
 import (
 	"context"
@@ -9,14 +9,20 @@ import (
 	"go.uber.org/fx"
 )
 
-// NewRESTModule ...
-func NewRESTModule() fx.Option {
+// NewModule ...
+func NewModule() fx.Option {
 	return fx.Module("rest",
+		fx.Provide(
+			NewConfig,
+			NewOption,
+			New,
+			NewMiddleware,
+		),
 		fx.Invoke(
-			func(lc fx.Lifecycle, handler http.Handler, config *Config, logger *eslog.Logger) {
+			func(lc fx.Lifecycle, middlewares http.Handler, config *Config, logger *eslog.Logger) {
 				httpserv := &http.Server{
-					Addr:         config.RESTAddress(),
-					Handler:      handler,
+					Addr:         config.Address(),
+					Handler:      middlewares,
 					ReadTimeout:  config.Read,
 					WriteTimeout: config.Write,
 					IdleTimeout:  config.Idle,
@@ -26,7 +32,7 @@ func NewRESTModule() fx.Option {
 					OnStart: func(_ context.Context) error {
 						errCh := make(chan error)
 						go func() {
-							logger.Info("REST server start", slog.String("address", config.RESTAddress()))
+							logger.Info("REST server start", slog.String("address", config.Address()))
 							if err := httpserv.ListenAndServe(); err != nil {
 								errCh <- err
 							}
