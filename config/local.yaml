@@ -18,7 +18,7 @@ rest:
     write: 5s
     idle: 15s
   cors:
-    origin: "http://localhost:8080"
+    origin: "*"
     max-age: 0
 
 swagger:
