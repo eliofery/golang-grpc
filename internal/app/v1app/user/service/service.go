@@ -3,13 +3,13 @@ package service
 import (
 	"context"
 
-	userv1 "github.com/eliofery/golang-fullstack/internal/v1app/user/repository"
-	desc "github.com/eliofery/golang-fullstack/pkg/api/user/v1"
+	"github.com/eliofery/golang-fullstack/internal/app/v1app/user/model"
+	userv1 "github.com/eliofery/golang-fullstack/internal/app/v1app/user/repository"
 )
 
 // Service ...
 type Service interface {
-	Get(context.Context, *desc.GetRequest) (*desc.GetResponse, error)
+	SignUp(context.Context, *model.UserInfo) (*int64, error)
 }
 
 type service struct {

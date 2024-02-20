@@ -1,9 +1,9 @@
 package user
 
 import (
-	"github.com/eliofery/golang-fullstack/internal/v1app/user/api"
-	"github.com/eliofery/golang-fullstack/internal/v1app/user/repository"
-	"github.com/eliofery/golang-fullstack/internal/v1app/user/service"
+	"github.com/eliofery/golang-fullstack/internal/app/v1app/user/api"
+	"github.com/eliofery/golang-fullstack/internal/app/v1app/user/repository"
+	"github.com/eliofery/golang-fullstack/internal/app/v1app/user/service"
 	desc "github.com/eliofery/golang-fullstack/pkg/api/user/v1"
 	"go.uber.org/fx"
 )
