@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package user.v1;
+
+option go_package = "github.com/eliofery/golang-fullstack/pkg/api/user/v1";
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/wrappers.proto";
+import "buf/validate/validate.proto";
+
+message SignUpRequest {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+        json_schema: {
+            title: "SignUpRequest"
+            description: "Request to create new user."
+            required: ["email", "password", "password_confirm"]
+        }
+        external_docs: {
+            url: "http://localhost:8086/?urls.primaryName=User%20v1";
+            description: "Request to create new user";
+        }
+        example: '{"first_name":"Sinbad","last_name":"Sailor","email":"foo@bar.baz","password":"1234567890","password_confirm":"1234567890"}'
+    };
+
+    // User first name
+    google.protobuf.StringValue first_name = 1 [
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            description: 'FirstName sql.NullString `json:"first_name"`'
+        }
+    ];
+
+    // User last name
+    google.protobuf.StringValue last_name = 2 [
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            description: 'LastName sql.NullString `json:"last_name"`'
+        }
+    ];
+
+    // User email
+    string email = 3 [
+        (buf.validate.field).string.email = true,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            description: 'Email string `json:"email"`'
+        }
+    ];
+
+    // User password
+    string password = 4 [
+        (buf.validate.field).required = true,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            description: 'Password string `json:"password"`'
+        }
+    ];
+
+    // User password confirm
+    string password_confirm = 5 [
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            description: 'PasswordConfirm string `json:"password_confirm"`'
+        }
+    ];
+
+    // PasswordConfirm must be equal to Password
+    option (buf.validate.message).cel = {
+        id: "create_request.password_confirm",
+        message: "Passwords don't match",
+        expression: "this.password == this.password_confirm"
+    };
+}

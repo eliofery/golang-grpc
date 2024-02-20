@@ -16,8 +16,7 @@ services:
       - ./docs/api:/usr/share/nginx/html/docs
     environment:
       URLS: "[
-        {url: '/docs/user/v1/service.swagger.json', name: 'User API v1.0'},
-        {url: '/docs/user/v2/service.swagger.json', name: 'User API v2.0'}
+        {url: '/docs/user/v1/service.swagger.json', name: 'User v1'}
       ]"
 
   postgres:

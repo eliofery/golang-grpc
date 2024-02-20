@@ -2,60 +2,64 @@ syntax = "proto3";
 
 package user.v1;
 
+option go_package = "github.com/eliofery/golang-fullstack/pkg/api/user/v1";
+
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "user/v1/request.proto";
-import "user/v1/response.proto";
-
-option go_package = "github.com/eliofery/golang-fullstack/pkg/api/user/v1";
+import "user/v1/signup_request.proto";
+import "user/v1/signup_response.proto";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
-    title: "Главный заголовок API";
+    title: "User API";
     version: "1.0";
-    description: "Основное описание API";
+    description: "Interaction with users via API";
     contact: {
-      name: "Название проекта, Имя автора";
+      name: "Sergio Eliofery";
       url: "https://github.com/eliofery/golang-fullstack";
-      email: "mail@example.site";
+      //      email: "mail@example.site"; todo add email
     };
-    license: {
-      name: "Название лицензии";
-      url: "https://github.com/eliofery/golang-fullstack/blob/main/LICENSE";
-    };
+    //    license: {
+    //      name: "MIT";
+    //      url: "https://github.com/eliofery/golang-fullstack/blob/main/LICENSE";
+    //    };
   };
   host: "localhost:8080";
   schemes: [
     HTTP,
     HTTPS
   ];
-  consumes: [
-    "application/json",
-    "application/xml"
-  ]; // request
-  produces: [
-    "application/json",
-    "application/xml"
-  ]; // response
+  consumes: ["application/json"];
+  produces: ["application/json"];
 };
 
 service UserV1Service {
-  rpc Get(GetRequest) returns (GetResponse) {
+  rpc SignUp(SignUpRequest) returns (SignUpResponse) {
     option (google.api.http) = {
-      post: "/v1/user"
+      post: "/v1/signup"
       body: "*"
     };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Получение данных пользователя по его ID";
-      operation_id: "Get";
+      operation_id: "register"
+      summary: "Create new user"
       responses: {
         key: "200"
-        value: {description: "OK Success"}
-      },
+        value: {
+          description: "Created new user";
+          schema: {
+            json_schema: {ref: "#/definitions/v1SignUpResponse"}
+          }
+        }
+      }
       responses: {
-        key: "404"
-        value: {description: "Not found"}
+        key: "400",
+        value: {
+          description: "Invalid input";
+          schema: {
+            example: '{ "code": 3, "message": "validation error", "details": [] }'
+          }
+        }
       }
     };
   }
