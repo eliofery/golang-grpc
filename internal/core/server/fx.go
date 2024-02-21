@@ -11,7 +11,6 @@ import (
 func NewModule() fx.Option {
 	return fx.Module("server",
 		fx.Provide(
-			NewConfig,
 			NewTransport,
 		),
 		fx.Options(

@@ -5,8 +5,7 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/eliofery/golang-fullstack/internal/app/v1app/user/model"
-	"github.com/eliofery/golang-fullstack/internal/core/postgres"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/eliofery/golang-fullstack/internal/core/database/postgres"
 )
 
 // Repository ...
@@ -15,14 +14,14 @@ type Repository interface {
 }
 
 type repository struct {
-	conn   *pgxpool.Pool
+	db     postgres.DB
 	format squirrel.PlaceholderFormat
 }
 
 // New ...
-func New(pg *postgres.Postgres) Repository {
+func New(pg postgres.Client) Repository {
 	return &repository{
-		conn:   pg.DB(),
+		db:     pg.DB(),
 		format: squirrel.Dollar,
 	}
 }

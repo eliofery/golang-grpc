@@ -9,8 +9,8 @@ import (
 type GRPC struct {
 	fx.Out
 
-	Server           *grpc.Server
-	ServiceRegistrar grpc.ServiceRegistrar
+	*grpc.Server
+	grpc.ServiceRegistrar
 }
 
 // New ...

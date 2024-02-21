@@ -4,8 +4,8 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/eliofery/golang-fullstack/internal/core"
+	"github.com/eliofery/golang-fullstack/internal/core/database"
 	"github.com/eliofery/golang-fullstack/internal/core/logger"
-	"github.com/eliofery/golang-fullstack/internal/core/postgres"
 	"github.com/eliofery/golang-fullstack/internal/core/server"
 )
 
@@ -19,7 +19,7 @@ func main() {
 		),
 		fx.Options(
 			logger.NewModule(),
-			postgres.NewModule(),
+			database.NewModule(),
 			server.NewModule(),
 		),
 	).Run()

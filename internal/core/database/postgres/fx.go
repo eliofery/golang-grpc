@@ -11,20 +11,21 @@ func NewModule() fx.Option {
 	return fx.Module("postgres",
 		fx.Provide(
 			NewConfig,
-			New,
+			NewClient,
+			NewTransactionManager,
 		),
 		fx.Invoke(
-			func(lc fx.Lifecycle, postgres *Postgres) {
+			func(lc fx.Lifecycle, pgClient Client) {
 				lc.Append(fx.Hook{
 					OnStart: func(_ context.Context) error {
-						if err := postgres.Migrate(); err != nil {
+						if err := pgClient.Migrate(); err != nil {
 							return err
 						}
 
 						return nil
 					},
 					OnStop: func(_ context.Context) error {
-						return postgres.Close()
+						return pgClient.Close()
 					},
 				})
 			},

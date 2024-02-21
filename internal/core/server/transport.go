@@ -10,7 +10,7 @@ import (
 type Transport struct {
 	fx.Out
 
-	TransportCredentials credentials.TransportCredentials
+	credentials.TransportCredentials
 }
 
 // NewTransport ...

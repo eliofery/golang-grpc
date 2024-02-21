@@ -22,6 +22,7 @@ require (
 
 require (
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
+	github.com/georgysavva/scany/v2 v2.1.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/cel-go v0.20.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
