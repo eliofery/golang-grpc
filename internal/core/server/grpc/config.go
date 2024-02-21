@@ -8,7 +8,7 @@ import (
 	"go.uber.org/config"
 )
 
-const serverKeyName = "grpc"
+const configKeyName = "grpc"
 
 // Config ...
 type Config struct {
@@ -19,7 +19,7 @@ type Config struct {
 // NewConfig ...
 func NewConfig(provider config.Provider) (*Config, error) {
 	var conf Config
-	if err := provider.Get(serverKeyName).Populate(&conf); err != nil {
+	if err := provider.Get(configKeyName).Populate(&conf); err != nil {
 		return nil, fmt.Errorf("failed to populate grpc server config: %w", err)
 	}
 

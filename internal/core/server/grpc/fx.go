@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net"
 
+	"github.com/eliofery/golang-fullstack/internal/core/server/grpc/interceptor"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
@@ -16,9 +17,11 @@ func NewModule() fx.Option {
 	return fx.Module("grpc",
 		fx.Provide(
 			NewConfig,
-			NewInterceptor,
 			NewOption,
 			New,
+		),
+		fx.Options(
+			interceptor.NewModule(),
 		),
 		fx.Invoke(
 			func(lc fx.Lifecycle, server *grpc.Server, config *Config, logger *eslog.Logger) {

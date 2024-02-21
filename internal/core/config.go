@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	appKeyName    = "app"
-	appENVDefault = "local"
+	configKeyName = "app"
+	envDefault    = "local"
 )
 
 // EnvConfig ...
@@ -48,8 +48,8 @@ func NewConfig(cli *Options) (Config, error) {
 	}
 
 	var conf EnvConfig
-	conf.ENV = appENVDefault
-	if err = loader.Get(appKeyName).Populate(&conf); err != nil {
+	conf.ENV = envDefault
+	if err = loader.Get(configKeyName).Populate(&conf); err != nil {
 		return Config{}, fmt.Errorf("error to populate main config: %w", err)
 	}
 
