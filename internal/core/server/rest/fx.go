@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/eliofery/golang-fullstack/internal/core/server/rest/middleware"
 	"github.com/eliofery/golang-fullstack/pkg/eslog"
 	"go.uber.org/fx"
 )
@@ -16,7 +17,9 @@ func NewModule() fx.Option {
 			NewConfig,
 			NewOption,
 			New,
-			NewMiddleware,
+		),
+		fx.Options(
+			middleware.NewModule(),
 		),
 		fx.Invoke(
 			func(lc fx.Lifecycle, middlewares http.Handler, config *Config, logger *eslog.Logger) {

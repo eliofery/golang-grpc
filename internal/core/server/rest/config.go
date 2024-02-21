@@ -9,7 +9,7 @@ import (
 	"go.uber.org/config"
 )
 
-const serverKeyName = "rest"
+const configKeyName = "rest"
 
 // Timeout ...
 type Timeout struct {
@@ -35,7 +35,7 @@ type Config struct {
 // NewConfig ...
 func NewConfig(provider config.Provider) (*Config, error) {
 	var conf Config
-	if err := provider.Get(serverKeyName).Populate(&conf); err != nil {
+	if err := provider.Get(configKeyName).Populate(&conf); err != nil {
 		return nil, fmt.Errorf("failed to populate rest server config: %w", err)
 	}
 
