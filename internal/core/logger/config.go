@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	loggerKeyName = "logger"
+	configKeyName = "logger"
 
 	logNameTrace = "trace"
 	logNameDebug = "debug"
@@ -39,7 +39,7 @@ type Config struct {
 // NewConfig ...
 func NewConfig(provider config.Provider) (*Config, error) {
 	var conf Config
-	if err := provider.Get(loggerKeyName).Populate(&conf); err != nil {
+	if err := provider.Get(configKeyName).Populate(&conf); err != nil {
 		return nil, fmt.Errorf("error to populate logger config: %w", err)
 	}
 

@@ -45,8 +45,8 @@ func handler(config *Config) slog.Handler {
 
 // LevelVar ...
 func levelVar(config *Config) *slog.LevelVar {
-	levelVar := new(slog.LevelVar)
-	levelVar.Set(config.Leveler())
+	lvl := new(slog.LevelVar)
+	lvl.Set(config.Leveler())
 
-	return levelVar
+	return lvl
 }
