@@ -6,6 +6,11 @@ logger:
   add-source: true
   json: false
 
+# openssl rand -base64 48
+jwt:
+  secret: OHgnU3V9vLvaGe+6USuxhHaXswyy6eK2YxGgAPnFscdndPy+dyJc6zXLL6WzD+yz
+  expires: 3600
+
 grpc:
   host: "localhost"
   port: 50051
@@ -21,20 +26,12 @@ rest:
     origin: "*"
     max-age: 0
 
-swagger:
-  editor:
-    port: 8085
-  ui:
-    port: 8086
-
 postgres:
   host: "localhost"
-  port: 5432
   # Set env
+  # port:
   # user:
   # password:
   # database:
   sslmode: disable
-
-adminer:
-  port: 3333
+  is-migration: false

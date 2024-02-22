@@ -5,3 +5,4 @@ pkg/api
 
 .env
 prod.env
+config/prod.yaml

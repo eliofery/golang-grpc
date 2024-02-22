@@ -7,6 +7,8 @@ require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/bufbuild/protovalidate-go v0.6.0
 	github.com/fatih/color v1.16.0
+	github.com/georgysavva/scany/v2 v2.1.0
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/jackc/pgerrcode v0.0.0-20220416144525-469b46aa5efa
 	github.com/jackc/pgx/v5 v5.5.3
@@ -22,7 +24,6 @@ require (
 
 require (
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
-	github.com/georgysavva/scany/v2 v2.1.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/cel-go v0.20.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect

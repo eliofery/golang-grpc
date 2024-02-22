@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/eliofery/golang-fullstack/internal/core/jwt"
 	"go.uber.org/fx"
 
 	"github.com/eliofery/golang-fullstack/internal/core"
@@ -20,6 +21,7 @@ func main() {
 		fx.Options(
 			logger.NewModule(),
 			database.NewModule(),
+			jwt.NewModule(),
 			server.NewModule(),
 		),
 	).Run()
