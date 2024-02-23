@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/eliofery/golang-fullstack/internal/core/database/postgres"
+	"github.com/eliofery/golang-grpc/internal/core/database/postgres"
 	"go.uber.org/fx"
 )
 

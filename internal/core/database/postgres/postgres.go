@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/eliofery/golang-fullstack/pkg/eslog"
+	"github.com/eliofery/golang-grpc/pkg/eslog"
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/eliofery/golang-fullstack/pkg/eslog"
+	"github.com/eliofery/golang-grpc/pkg/eslog"
 	"go.uber.org/config"
 )
 

@@ -5,8 +5,8 @@ import (
 	"log/slog"
 	"net"
 
-	"github.com/eliofery/golang-fullstack/internal/core/server/grpc/interceptor"
-	"github.com/eliofery/golang-fullstack/pkg/eslog"
+	"github.com/eliofery/golang-grpc/internal/core/server/grpc/interceptor"
+	"github.com/eliofery/golang-grpc/pkg/eslog"
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"

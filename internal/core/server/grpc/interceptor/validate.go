@@ -5,7 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/bufbuild/protovalidate-go"
-	"github.com/eliofery/golang-fullstack/pkg/eslog"
+	"github.com/eliofery/golang-grpc/pkg/eslog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -18,14 +18,12 @@ func validate(logger *eslog.Logger) grpc.UnaryServerInterceptor {
 		v, err := protovalidate.New()
 		if err != nil {
 			logger.Debug("interceptor.Validate", slog.String("err", err.Error()))
-
 			return nil, err
 		}
 
 		if msg, ok := req.(proto.Message); ok {
 			if err = v.Validate(msg); err != nil {
 				logger.Debug("interceptor.Validate", slog.String("err", err.Error()))
-
 				return nil, status.Error(codes.InvalidArgument, err.Error())
 			}
 		}

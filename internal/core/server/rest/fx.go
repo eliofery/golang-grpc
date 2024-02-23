@@ -5,8 +5,8 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/eliofery/golang-fullstack/internal/core/server/rest/middleware"
-	"github.com/eliofery/golang-fullstack/pkg/eslog"
+	"github.com/eliofery/golang-grpc/internal/core/server/rest/middleware"
+	"github.com/eliofery/golang-grpc/pkg/eslog"
 	"go.uber.org/fx"
 )
 

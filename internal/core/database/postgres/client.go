@@ -5,8 +5,9 @@ import (
 	"database/sql"
 	"log/slog"
 
-	"github.com/eliofery/golang-fullstack/migrations"
-	"github.com/eliofery/golang-fullstack/pkg/eslog"
+	"github.com/Masterminds/squirrel"
+	"github.com/eliofery/golang-grpc/migrations"
+	"github.com/eliofery/golang-grpc/pkg/eslog"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
@@ -46,6 +47,11 @@ func NewClient(ctx context.Context, config *Config, logger *eslog.Logger) (Clien
 // DB ...
 func (cp *ClientPostgres) DB() DB {
 	return cp.masterDBC
+}
+
+// QB ...
+func (cp *ClientPostgres) QB() squirrel.StatementBuilderType {
+	return squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
 }
 
 // Close ...

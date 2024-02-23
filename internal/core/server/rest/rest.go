@@ -1,7 +1,7 @@
 package rest
 
 import (
-	"github.com/eliofery/golang-fullstack/internal/core/server/grpc"
+	"github.com/eliofery/golang-grpc/internal/core/server/grpc"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"go.uber.org/fx"
 )

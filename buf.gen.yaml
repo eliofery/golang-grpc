@@ -3,7 +3,7 @@ version: v1
 #managed:
 #  enabled: true
 #  go_package_prefix:
-#    default: github.com/eliofery/golang-fullstack
+#    default: github.com/eliofery/golang-grpc
 #    except:
 #      - buf.build/bufbuild/protovalidate
 
@@ -29,3 +29,5 @@ plugins:
   - name: openapiv2
     path: ./bin/protoc-gen-openapiv2
     out: ./docs/api
+    opt:
+      - disable_service_tags=true

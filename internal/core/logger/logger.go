@@ -7,8 +7,8 @@ import (
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 
-	"github.com/eliofery/golang-fullstack/pkg/eslog"
-	"github.com/eliofery/golang-fullstack/pkg/eslog/pretty"
+	"github.com/eliofery/golang-grpc/pkg/eslog"
+	"github.com/eliofery/golang-grpc/pkg/eslog/pretty"
 )
 
 // Logger ...

@@ -3,7 +3,7 @@ package logger
 import (
 	"go.uber.org/fx"
 
-	"github.com/eliofery/golang-fullstack/pkg/eslog"
+	"github.com/eliofery/golang-grpc/pkg/eslog"
 )
 
 // NewModule ...

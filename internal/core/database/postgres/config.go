@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/eliofery/golang-fullstack/internal/core"
+	"github.com/eliofery/golang-grpc/internal/core"
 	"go.uber.org/config"
 )
 

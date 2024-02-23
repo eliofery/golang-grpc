@@ -1,9 +1,9 @@
 package server
 
 import (
-	"github.com/eliofery/golang-fullstack/internal/app"
-	"github.com/eliofery/golang-fullstack/internal/core/server/grpc"
-	"github.com/eliofery/golang-fullstack/internal/core/server/rest"
+	"github.com/eliofery/golang-grpc/internal/app"
+	"github.com/eliofery/golang-grpc/internal/core/server/grpc"
+	"github.com/eliofery/golang-grpc/internal/core/server/rest"
 	"go.uber.org/fx"
 )
 

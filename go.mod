@@ -1,4 +1,4 @@
-module github.com/eliofery/golang-fullstack
+module github.com/eliofery/golang-grpc
 
 go 1.21.5
 

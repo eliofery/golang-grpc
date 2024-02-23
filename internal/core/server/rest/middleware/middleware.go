@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/eliofery/golang-fullstack/pkg/esmux"
+	"github.com/eliofery/golang-grpc/pkg/esmux"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
