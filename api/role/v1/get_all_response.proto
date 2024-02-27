@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package role.v1;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/eliofery/golang-grpc/pkg/api/role/v1";
+
+message GetAllResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "GetAllResponse"
+      description: "Response to get all roles data"
+    }
+    external_docs: {
+      url: "http://localhost:8086/?urls.primaryName=Role%20v1"
+      description: "Response to get all roles data"
+    }
+    example: '{"roles":[{"id":"1","name":"Admin"},{"id":"2","name":"Moderator"},{"id":"3","name":"User"}]}'
+  };
+
+  // Role
+  message Role {
+    // Role ID
+    int64 id = 1 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: 'ID int64 `json:"id"`'
+      }
+    ];
+
+    // Role name
+    string name = 2 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: 'Name string `json:"name"`'
+      }
+    ];
+  }
+
+  // List of roles
+  repeated Role roles = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'Roles []Role `json:"roles"`'
+    }
+  ];
+}
