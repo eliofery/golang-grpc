@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package user.v1;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/wrappers.proto";
+import "buf/validate/validate.proto";
+
+option go_package = "github.com/eliofery/golang-grpc/pkg/api/user/v1";
+
+message CreateRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "CreateRequest"
+      description: "Request to create new user"
+      required: [
+        "email",
+        "password"
+      ]
+    }
+    external_docs: {
+      url: "http://localhost:8086/?urls.primaryName=User%20v1"
+      description: "Request to create new user"
+    }
+    example: '{"first_name":"Sinbad","last_name":"Sailor","email":"foo@bar.baz","password":"1234567890"}'
+  };
+
+  // User first name
+  google.protobuf.StringValue first_name = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'FirstName sql.NullString `json:"first_name"`'
+    }
+  ];
+
+  // User last name
+  google.protobuf.StringValue last_name = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'LastName sql.NullString `json:"last_name"`'
+    }
+  ];
+
+  // User email
+  string email = 3 [
+    (buf.validate.field).string.email = true,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'Email string `json:"email"`'
+    }
+  ];
+
+  // User password
+  string password = 4 [
+    (buf.validate.field) = {
+      required: true,
+      cel: {
+        id: "password",
+        message: "must be 8 - 72 characters long and only contain letters and digits",
+        expression: "this.matches('^[-_ A-Za-z0-9]{8,72}$')"
+      }
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'Password string `json:"password"`'
+    }
+  ];
+}

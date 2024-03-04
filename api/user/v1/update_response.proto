@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package user.v1;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/eliofery/golang-grpc/pkg/api/user/v1";
+
+message UpdateResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "UpdateResponse"
+      description: "Response to update user"
+    }
+    external_docs: {
+      url: "http://localhost:8086/?urls.primaryName=User%20v1"
+      description: "Response to update user"
+    }
+    example: '{"id":"123","first_name":"Sinbad","last_name":"Sailor","email":"foo@bar.baz","created_at":"2022-01-01T00:00:00Z","updated_at":"2022-01-01T00:00:00Z"}'
+  };
+
+  // User ID
+  int64 id = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'ID int64 `json:"id"`'
+    }
+  ];
+
+  // User first name
+  google.protobuf.StringValue first_name = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'FirstName sql.NullString `json:"first_name"`'
+    }
+  ];
+
+  // User last name
+  google.protobuf.StringValue last_name = 3 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'LastName sql.NullString `json:"last_name"`'
+    }
+  ];
+
+  // User email
+  string email = 4 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'Email string `json:"email"`'
+    }
+  ];
+
+  // User created at
+  google.protobuf.Timestamp created_at = 5 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'CreatedAt time.Time `json:"created_at"`'
+    }
+  ];
+
+  // User updated at
+  google.protobuf.Timestamp updated_at = 6 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'UpdatedAt sql.NullTime `json:"updated_at"`'
+    }
+  ];
+}

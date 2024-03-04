@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package user.v1;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/eliofery/golang-grpc/pkg/api/user/v1";
+
+message GetAllRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "GetAllRequest"
+      description: "Request to get all users data"
+    }
+    external_docs: {
+      url: "http://localhost:8086/?urls.primaryName=User%20v1"
+      description: "Request to get all users data"
+    }
+    example: '{"page": 1}'
+  };
+
+  // Page number
+  uint64 page = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'Page uint64 `json:"page"`'
+      default: "1"
+    }
+  ];
+}
