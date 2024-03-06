@@ -2,39 +2,18 @@ package service
 
 import (
 	"context"
-
-	"github.com/eliofery/golang-fullstack/internal/app/v1app/user/model"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // SignUp ...
-func (s service) SignUp(ctx context.Context, userInfo *model.UserInfo) (*int64, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userInfo.Password), bcrypt.DefaultCost)
+func (s *service) SignUp(ctx context.Context, userID int64) error {
+	token, err := s.tokenManager.Generate(userID)
 	if err != nil {
-		return nil, err
-	}
-	userInfo.Password = string(hashedPassword)
-
-	var id *int64
-	err = s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
-		var errTx error
-
-		id, errTx = s.userRepository.Create(ctx, userInfo)
-		if errTx != nil {
-			return errTx
-		}
-
-		id, errTx = s.userRepository.Create(ctx, userInfo)
-		if errTx != nil {
-			return errTx
-		}
-
-		return nil
-	})
-
-	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return id, nil
+	if err = s.tokenManager.SendAuthHeader(ctx, token); err != nil {
+		return err
+	}
+
+	return nil
 }
