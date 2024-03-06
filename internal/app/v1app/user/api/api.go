@@ -1,19 +1,25 @@
 package api
 
 import (
-	userv1 "github.com/eliofery/golang-fullstack/internal/app/v1app/user/service"
-	desc "github.com/eliofery/golang-fullstack/pkg/api/user/v1"
+	deniedtokenv1 "github.com/eliofery/golang-grpc/internal/app/v1app/denied_token/service"
+	userv1 "github.com/eliofery/golang-grpc/internal/app/v1app/user/service"
+	desc "github.com/eliofery/golang-grpc/pkg/api/user/v1"
 )
 
-// API ...
-type API struct {
+// api ...
+type api struct {
 	desc.UnimplementedUserV1ServiceServer
-	userService userv1.Service
+	userService        userv1.Service
+	deniedtokenService deniedtokenv1.Service
 }
 
 // New ...
-func New(userService userv1.Service) desc.UserV1ServiceServer {
-	return &API{
-		userService: userService,
+func New(
+	userService userv1.Service,
+	deniedtokenService deniedtokenv1.Service,
+) desc.UserV1ServiceServer {
+	return &api{
+		userService:        userService,
+		deniedtokenService: deniedtokenService,
 	}
 }
