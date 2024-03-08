@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/eliofery/golang-fullstack/internal/core/jwt"
+	"github.com/eliofery/golang-grpc/internal/core"
+	"github.com/eliofery/golang-grpc/internal/core/database"
+	"github.com/eliofery/golang-grpc/internal/core/jwt"
+	"github.com/eliofery/golang-grpc/internal/core/logger"
+	"github.com/eliofery/golang-grpc/internal/core/pagination"
+	"github.com/eliofery/golang-grpc/internal/core/server"
 	"go.uber.org/fx"
-
-	"github.com/eliofery/golang-fullstack/internal/core"
-	"github.com/eliofery/golang-fullstack/internal/core/database"
-	"github.com/eliofery/golang-fullstack/internal/core/logger"
-	"github.com/eliofery/golang-fullstack/internal/core/server"
 )
 
 func main() {
@@ -20,6 +20,7 @@ func main() {
 		),
 		fx.Options(
 			logger.NewModule(),
+			pagination.NewModule(),
 			database.NewModule(),
 			jwt.NewModule(),
 			server.NewModule(),
