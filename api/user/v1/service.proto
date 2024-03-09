@@ -361,10 +361,7 @@ service UserV1Service {
   // Delete user
   rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/v1/users/delete"
-      additional_bindings: {
-        delete: "/v1/users/delete/{id}"
-      }
+      delete: "/v1/users/delete/{id}"
     };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
