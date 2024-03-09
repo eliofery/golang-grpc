@@ -16,14 +16,14 @@ func (r *repository) GetByID(ctx context.Context, id int64) (*model.Role, error)
 	op := "v1.role.repository.GetByID"
 
 	qb := r.pgQb.
-		Select(model.ColumnID, model.ColumnName).
+		Select("id as role_id", model.ColumnName).
 		From(model.TableName).
-		Where(squirrel.Eq{"id": id})
+		Where(squirrel.Eq{model.ColumnID: id})
 
 	query, args, err := qb.ToSql()
 	if err != nil {
 		r.logger.Debug(op, slog.String("err", err.Error()))
-		return nil, nil //errGetByID
+		return nil, errGetByID
 	}
 
 	q := postgres.Query{
@@ -31,16 +31,16 @@ func (r *repository) GetByID(ctx context.Context, id int64) (*model.Role, error)
 		QueryRaw: query,
 	}
 
-	var user model.Role
-	if err = r.db.ScanOneContext(ctx, &user, q, args...); err != nil {
+	var role model.Role
+	if err = r.db.ScanOneContext(ctx, &role, q, args...); err != nil {
 		r.logger.Debug(op, slog.String("err", err.Error()))
 
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, errNotFound
 		}
 
-		return nil, nil //errGetByID
+		return nil, errGetByID
 	}
 
-	return &user, nil
+	return &role, nil
 }

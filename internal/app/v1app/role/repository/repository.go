@@ -20,6 +20,7 @@ var (
 	errExists   = status.Error(codes.AlreadyExists, "role already exists")
 	errNotFound = status.Error(codes.NotFound, "role not found")
 	errGetAll   = status.Error(codes.Internal, "failed to get roles")
+	errGetByID  = status.Error(codes.Internal, "failed to get role by id")
 )
 
 // Repository ...
