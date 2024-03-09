@@ -29,6 +29,10 @@ func FromUserModelToUpdateResponse(user *model.User) *desc.UpdateResponse {
 		FirstName: firstName,
 		LastName:  lastName,
 		Email:     user.Email,
+		Role: &desc.UpdateResponse_Role{
+			Id:   user.Role.ID,
+			Name: user.Role.Name,
+		},
 		CreatedAt: timestamppb.New(user.CreatedAt),
 		UpdatedAt: updatedAt,
 	}

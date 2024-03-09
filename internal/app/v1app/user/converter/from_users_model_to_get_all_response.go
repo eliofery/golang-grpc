@@ -41,6 +41,10 @@ func FromUserModelToGetAllResponseUser(user model.User) *desc.GetAllResponse_Use
 		FirstName: firstName,
 		LastName:  lastName,
 		Email:     user.Email,
+		Role: &desc.GetAllResponse_Role{
+			Id:   user.Role.ID,
+			Name: user.Role.Name,
+		},
 		CreatedAt: timestamppb.New(user.CreatedAt),
 		UpdatedAt: updatedAt,
 	}

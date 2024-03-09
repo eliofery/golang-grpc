@@ -29,6 +29,10 @@ func FromUserModelToGetByIDResponse(user *model.User) *desc.GetByIDResponse {
 		FirstName: firstName,
 		LastName:  lastName,
 		Email:     user.Email,
+		Role: &desc.GetByIDResponse_Role{
+			Id:   user.Role.ID,
+			Name: user.Role.Name,
+		},
 		CreatedAt: timestamppb.New(user.CreatedAt),
 		UpdatedAt: updatedAt,
 	}
