@@ -14,12 +14,7 @@ func (a *api) Delete(ctx context.Context, req *desc.DeleteRequest) (*emptypb.Emp
 		return nil, interceptor.ErrNotAuthenticated
 	}
 
-	id := interceptor.UserID(ctx, req.GetId())
-	if err := a.userService.Delete(ctx, id); err != nil {
-		return nil, err
-	}
-
-	if err := a.deniedtokenService.Create(ctx, interceptor.UserToken(ctx)); err != nil {
+	if err := a.userService.Delete(ctx, req.GetId()); err != nil {
 		return nil, err
 	}
 
