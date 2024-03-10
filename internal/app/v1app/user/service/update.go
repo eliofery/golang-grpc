@@ -30,5 +30,11 @@ func (s *service) Update(ctx context.Context, user *dto.Update) (*model.User, er
 		return nil, err
 	}
 
+	role, err := s.roleRepository.GetByID(ctx, updateUser.Role.ID)
+	if err != nil {
+		return nil, err
+	}
+	updateUser.Role.Name = role.Name
+
 	return updateUser, nil
 }

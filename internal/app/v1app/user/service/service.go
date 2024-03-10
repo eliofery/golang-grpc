@@ -21,7 +21,6 @@ import (
 var (
 	errWrongAuth        = status.Error(codes.PermissionDenied, "wrong login or password")
 	errWrongOldPassword = status.Error(codes.InvalidArgument, "wrong old password")
-	errAccessDenied     = status.Error(codes.PermissionDenied, "access denied")
 	errPasswordLong     = status.Error(codes.PermissionDenied, "password is too long")
 )
 

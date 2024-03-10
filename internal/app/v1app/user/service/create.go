@@ -8,11 +8,16 @@ import (
 
 // Create ...
 func (s *service) Create(ctx context.Context, user *dto.User) (int64, error) {
-	var err error
-	user.RoleID, err = s.settingRepository.GetDefaultRoleID(ctx)
+	defaultRoleID, err := s.settingRepository.GetDefaultRoleID(ctx)
 	if err != nil {
 		return 0, err
 	}
+
+	role, err := s.roleRepository.GetByID(ctx, defaultRoleID)
+	if err != nil {
+		return 0, err
+	}
+	user.RoleID = role.ID
 
 	user.Password, err = s.generateFromPassword(user.Password)
 	if err != nil {
