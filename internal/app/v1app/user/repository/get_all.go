@@ -2,8 +2,10 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
+	roleModel "github.com/eliofery/golang-grpc/internal/app/v1app/role/model"
 	"github.com/eliofery/golang-grpc/internal/app/v1app/user/model"
 	"github.com/eliofery/golang-grpc/internal/core/database/postgres"
 	"github.com/eliofery/golang-grpc/internal/core/pagination"
@@ -14,8 +16,9 @@ func (r *repository) GetAll(ctx context.Context, pagination *pagination.Paginati
 	op := "v1.user.repository.GetAll"
 
 	qb := r.pgQb.
-		Select(model.ColumnID, model.ColumnFirstName, model.ColumnLastName, model.ColumnEmail, model.ColumnPassword, model.ColumnCreatedAt, model.ColumnUpdatedAt).
+		Select(model.ColumnAsID, model.ColumnFirstName, model.ColumnLastName, model.ColumnEmail, model.ColumnPassword, roleModel.ColumnAsID, roleModel.ColumnName, model.ColumnCreatedAt, model.ColumnUpdatedAt).
 		From(model.TableName).
+		InnerJoin(fmt.Sprintf("%s ON %s = %s", roleModel.TableName, roleModel.ColumnID, roleModel.ColumnAliasID)).
 		Limit(pagination.Limit()).
 		Offset(pagination.Offset())
 

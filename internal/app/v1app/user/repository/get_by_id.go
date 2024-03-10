@@ -3,9 +3,11 @@ package repository
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 
 	"github.com/Masterminds/squirrel"
+	roleModel "github.com/eliofery/golang-grpc/internal/app/v1app/role/model"
 	"github.com/eliofery/golang-grpc/internal/app/v1app/user/model"
 	"github.com/eliofery/golang-grpc/internal/core/database/postgres"
 	"github.com/jackc/pgx/v5"
@@ -16,9 +18,10 @@ func (r *repository) GetByID(ctx context.Context, id int64) (*model.User, error)
 	op := "v1.user.repository.GetByID"
 
 	qb := r.pgQb.
-		Select(model.ColumnID, model.ColumnFirstName, model.ColumnLastName, model.ColumnEmail, model.ColumnPassword, model.ColumnCreatedAt, model.ColumnUpdatedAt).
+		Select(model.ColumnAsID, model.ColumnFirstName, model.ColumnLastName, model.ColumnEmail, model.ColumnPassword, roleModel.ColumnAsID, roleModel.ColumnName, model.ColumnCreatedAt, model.ColumnUpdatedAt).
 		From(model.TableName).
-		Where(squirrel.Eq{"id": id})
+		InnerJoin(fmt.Sprintf("%s ON %s = %s", roleModel.TableName, roleModel.ColumnID, roleModel.ColumnAliasID)).
+		Where(squirrel.Eq{model.ColumnID: id})
 
 	query, args, err := qb.ToSql()
 	if err != nil {

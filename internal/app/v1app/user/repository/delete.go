@@ -2,13 +2,11 @@ package repository
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/eliofery/golang-grpc/internal/app/v1app/user/model"
 	"github.com/eliofery/golang-grpc/internal/core/database/postgres"
-	"github.com/jackc/pgx/v5"
 )
 
 // Delete ...
@@ -30,14 +28,14 @@ func (r *repository) Delete(ctx context.Context, id int64) error {
 		QueryRaw: query,
 	}
 
-	if _, err = r.db.ExecContext(ctx, q, args...); err != nil {
+	rows, err := r.db.ExecContext(ctx, q, args...)
+	if err != nil {
 		r.logger.Debug(op, slog.String("err", err.Error()))
-
-		if errors.Is(err, pgx.ErrNoRows) {
-			return errNotFound
-		}
-
 		return errDelete
+	}
+
+	if rows.RowsAffected() == 0 {
+		return errNotFound
 	}
 
 	return nil
