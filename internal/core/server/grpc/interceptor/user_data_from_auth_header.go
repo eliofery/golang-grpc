@@ -5,6 +5,8 @@ import (
 	"log/slog"
 
 	deniedTokenV1Repository "github.com/eliofery/golang-grpc/internal/app/v1app/denied_token/repository"
+	"github.com/eliofery/golang-grpc/internal/app/v1app/user/model"
+	userV1Repository "github.com/eliofery/golang-grpc/internal/app/v1app/user/repository"
 	"github.com/eliofery/golang-grpc/internal/core/jwt"
 	"github.com/eliofery/golang-grpc/pkg/eslog"
 	"google.golang.org/grpc"
@@ -26,9 +28,8 @@ var (
 
 // UserData ...
 type UserData struct {
-	ID     int64
-	Token  string
-	RoleID int64
+	User  *model.User
+	Token string
 }
 
 // userDataFromAuthHeader ...
@@ -37,6 +38,7 @@ func userDataFromAuthHeader(
 	tokenManager *jwt.TokenManager,
 
 	deniedTokenV1Repository deniedTokenV1Repository.Repository,
+	userV1Repository userV1Repository.Repository,
 ) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
 		op := "core.server.grpc.interceptor.userDataFromAuthHeader"
@@ -63,12 +65,18 @@ func userDataFromAuthHeader(
 			return handler(ctx, req)
 		}
 
-		user := UserData{
-			ID:    userID,
+		user, err := userV1Repository.GetByID(ctx, userID)
+		if err != nil {
+			logger.Debug(op, slog.String("err", err.Error()))
+			return handler(ctx, req)
+		}
+
+		userData := UserData{
+			User:  user,
 			Token: token,
 		}
 
-		return handler(withUser(ctx, &user), req)
+		return handler(withUser(ctx, &userData), req)
 	}
 }
 
@@ -93,7 +101,7 @@ func UserID(ctx context.Context, reqID ...int64) int64 {
 		return reqID[0]
 	}
 
-	return User(ctx).ID
+	return User(ctx).User.ID
 }
 
 // UserToken ...
@@ -103,7 +111,7 @@ func UserToken(ctx context.Context) string {
 
 // UserRoleID ...
 func UserRoleID(ctx context.Context) int64 {
-	return User(ctx).RoleID
+	return User(ctx).User.Role.ID
 }
 
 // IsAuthenticated ...
