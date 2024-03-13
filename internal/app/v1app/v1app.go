@@ -2,6 +2,7 @@ package v1app
 
 import (
 	deniedtoken "github.com/eliofery/golang-grpc/internal/app/v1app/denied_token"
+	"github.com/eliofery/golang-grpc/internal/app/v1app/permission"
 	"github.com/eliofery/golang-grpc/internal/app/v1app/role"
 	"github.com/eliofery/golang-grpc/internal/app/v1app/setting"
 	"github.com/eliofery/golang-grpc/internal/app/v1app/user"
@@ -15,5 +16,6 @@ func NewModule() fx.Option {
 		deniedtoken.NewModule(),
 		role.NewModule(),
 		user.NewModule(),
+		permission.NewModule(),
 	)
 }

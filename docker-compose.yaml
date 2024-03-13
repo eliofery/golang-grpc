@@ -18,7 +18,8 @@ services:
       URLS: "[
         {url: '/docs/user/v1/service.swagger.json', name: 'User v1'},
         {url: '/docs/denied_token/v1/service.swagger.json', name: 'Denied Token v1'},
-        {url: '/docs/role/v1/service.swagger.json', name: 'Role v1'}
+        {url: '/docs/role/v1/service.swagger.json', name: 'Role v1'},
+        {url: '/docs/permission/v1/service.swagger.json', name: 'Permission v1'}
       ]"
 
   postgres:
