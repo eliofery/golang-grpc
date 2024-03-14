@@ -48,7 +48,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
         type: TYPE_API_KEY
         in: IN_HEADER
         name: "Authorization"
-        description: "Authentication token, prefixed by Bearer: Bearer <token>"
+        description: "Authentication token, prefixed by Bearer: Bearer [token]"
       }
     }
   }
@@ -95,7 +95,7 @@ service UserV1Service {
             json_schema: {ref: "#/definitions/v1SignUpResponse"}
           }
           headers: {
-            key: "Grpc-Metadata-Authorization"
+            key: "Authorization"
             value: {
               type: "string"
               description: "Authentication Bearer token"
@@ -140,7 +140,7 @@ service UserV1Service {
         value: {
           description: "Authenticate user"
           headers: {
-            key: "Grpc-Metadata-Authorization"
+            key: "Authorization"
             value: {
               type: "string"
               description: "Authentication Bearer token"
@@ -239,12 +239,8 @@ service UserV1Service {
   // Update user
   rpc Update(UpdateRequest) returns (UpdateResponse) {
     option (google.api.http) = {
-      put: "/v1/users/update"
+      put: "/v1/users/update/{id}"
       body: "*"
-      additional_bindings: {
-        put: "/v1/users/update/{id}"
-        body: "*"
-      }
     };
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -288,7 +284,7 @@ service UserV1Service {
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get user data"
-      tags: "Get"
+      tags: "Read"
       responses: {
         key: "200"
         value: {
@@ -327,7 +323,7 @@ service UserV1Service {
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get all users data"
-      tags: "Get"
+      tags: "Read"
       responses: {
         key: "200"
         value: {

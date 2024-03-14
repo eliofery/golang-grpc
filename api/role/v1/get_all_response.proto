@@ -13,7 +13,7 @@ message GetAllResponse {
       description: "Response to get all roles data"
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=Role%20v1"
+      url: "http://localhost:8086/?urls.primaryName=Role"
       description: "Response to get all roles data"
     }
     example: '{"roles":[{"id":"1","name":"Admin"},{"id":"2","name":"Moderator"},{"id":"3","name":"User"}]}'

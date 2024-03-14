@@ -15,7 +15,7 @@ message GetByIDResponse {
       description: "Response to get user data by ID"
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=User%20v1"
+      url: "http://localhost:8086/?urls.primaryName=User"
       description: "Response to get user data by ID"
     }
     example: '{"id":"123","first_name":"Sinbad","last_name":"Sailor","email":"foo@bar.baz","created_at":"2022-01-01T00:00:00Z","updated_at":"2022-01-01T00:00:00Z"}'

@@ -45,7 +45,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
         type: TYPE_API_KEY
         in: IN_HEADER
         name: "Authorization"
-        description: "Authentication token, prefixed by Bearer: Bearer <token>"
+        description: "Authentication token, prefixed by Bearer: Bearer [token]"
       }
     }
   }
@@ -106,7 +106,7 @@ service PermissionV1Service {
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get permission data"
-      tags: "Get"
+      tags: "Read"
       responses: {
         key: "200"
         value: {
@@ -221,7 +221,7 @@ service PermissionV1Service {
 
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get all permission data"
-      tags: "Get"
+      tags: "Read"
       responses: {
         key: "200"
         value: {

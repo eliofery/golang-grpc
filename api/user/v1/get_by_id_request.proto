@@ -14,7 +14,7 @@ message GetByIDRequest {
       description: "Request to get user data by ID"
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=User%20v1"
+      url: "http://localhost:8086/?urls.primaryName=User"
       description: "Request to get user data by ID"
     }
     example: '{"id":"123"}'

@@ -13,7 +13,7 @@ message CreateResponse {
       description: "Response to create new user"
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=User%20v1"
+      url: "http://localhost:8086/?urls.primaryName=User"
       description: "Response to create new user"
     }
     example: '{"id":"123"}'

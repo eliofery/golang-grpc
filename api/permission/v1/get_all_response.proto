@@ -14,7 +14,7 @@ message GetAllResponse {
       description: "Response to get all permissions data"
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=Permission%20v1"
+      url: "http://localhost:8086/?urls.primaryName=Permission"
       description: "Response to get all permissions data"
     }
     example: '{"permissions":[{"id":"1","name":"create_settings","description":"Create settings"},{"id":"2","name":"read_settings","description":"View settings"},{"id":"3","name":"update_settings","description":"Edit settings"}]}'

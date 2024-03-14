@@ -13,7 +13,7 @@ message UpdateResponse {
       description: "Response to update role"
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=Role%20v1"
+      url: "http://localhost:8086/?urls.primaryName=Role"
       description: "Response to update role"
     }
     example: '{"id":"2","name":"Root"}'

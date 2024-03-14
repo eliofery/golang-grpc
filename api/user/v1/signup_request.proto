@@ -20,7 +20,7 @@ message SignUpRequest {
       ]
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=User%20v1"
+      url: "http://localhost:8086/?urls.primaryName=User"
       description: "Request to registration new user"
     }
     example: '{"first_name":"Sinbad","last_name":"Sailor","email":"foo@bar.baz","password":"1234567890","password_confirm":"1234567890"}'

@@ -13,7 +13,7 @@ message SignUpResponse {
       description: "Response to registration new user"
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=User%20v1"
+      url: "http://localhost:8086/?urls.primaryName=User"
       description: "Response to registration new user"
     }
     example: '{"id":"123"}'

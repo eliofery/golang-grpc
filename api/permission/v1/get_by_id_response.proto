@@ -14,7 +14,7 @@ message GetByIDResponse {
       description: "Response to get permission data by ID"
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=Permission%20v1"
+      url: "http://localhost:8086/?urls.primaryName=Permission"
       description: "Response to get permission data by ID"
     }
     example: '{"name":"create_users","description":"Create settings"}'

@@ -13,7 +13,7 @@ message GetAllRequest {
       description: "Request to get all permissions data"
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=Permission%20v1"
+      url: "http://localhost:8086/?urls.primaryName=Permission"
       description: "Request to get all permissions data"
     }
     example: '{"page": 1}'

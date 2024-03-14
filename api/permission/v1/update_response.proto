@@ -14,7 +14,7 @@ message UpdateResponse {
       description: "Response to update permission"
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=Permission%20v1"
+      url: "http://localhost:8086/?urls.primaryName=Permission"
       description: "Response to update permission"
     }
     example: '{"id":"1","name":"create_settings","description":"Create settings"}'

@@ -13,7 +13,7 @@ message CreateResponse {
       description: "Response to create new role"
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=Role%20v1"
+      url: "http://localhost:8086/?urls.primaryName=Role"
       description: "Response to create new role"
     }
     example: '{"id":"123"}'
