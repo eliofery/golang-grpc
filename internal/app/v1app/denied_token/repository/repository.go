@@ -13,6 +13,7 @@ import (
 
 var (
 	errCreate     = status.Error(codes.Internal, "failed to create token")
+	errExists     = status.Error(codes.AlreadyExists, "token already exists")
 	errGetByToken = status.Error(codes.Internal, "token not found")
 )
 
