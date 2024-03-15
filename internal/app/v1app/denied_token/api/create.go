@@ -14,7 +14,7 @@ func (a *api) Create(ctx context.Context, req *desc.CreateRequest) (*emptypb.Emp
 		return nil, interceptor.ErrNotAuthenticated
 	}
 
-	if err := a.tokenService.Create(ctx, req.GetToken()); err != nil {
+	if err := a.deniedTokenService.Create(ctx, req.GetToken()); err != nil {
 		return nil, err
 	}
 
