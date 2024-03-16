@@ -9,7 +9,7 @@ import (
 func FromRolesModelToGetAllResponse(roles []model.Role) *desc.GetAllResponse {
 	rolesResp := make([]*desc.GetAllResponse_Role, 0, len(roles))
 	for _, role := range roles {
-		rolesResp = append(rolesResp, FromRoleModelToGetAllResponseUser(role))
+		rolesResp = append(rolesResp, FromRoleModelToGetAllResponseRole(role))
 	}
 
 	return &desc.GetAllResponse{
@@ -17,8 +17,8 @@ func FromRolesModelToGetAllResponse(roles []model.Role) *desc.GetAllResponse {
 	}
 }
 
-// FromRoleModelToGetAllResponseUser ...
-func FromRoleModelToGetAllResponseUser(role model.Role) *desc.GetAllResponse_Role {
+// FromRoleModelToGetAllResponseRole ...
+func FromRoleModelToGetAllResponseRole(role model.Role) *desc.GetAllResponse_Role {
 	return &desc.GetAllResponse_Role{
 		Id:   role.ID,
 		Name: role.Name,
