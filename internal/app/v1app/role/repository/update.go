@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	"github.com/Masterminds/squirrel"
@@ -18,7 +19,7 @@ func (r *repository) Update(ctx context.Context, role *dto.Role) (*model.Role, e
 		Update(model.TableName).
 		SetMap(squirrel.Eq{model.ColumnName: role.Name}).
 		Where(squirrel.Eq{model.ColumnID: role.ID}).
-		Suffix("RETURNING id, name")
+		Suffix(fmt.Sprintf("RETURNING %s, %s", model.ColumnAsID, model.ColumnName))
 
 	query, args, err := qb.ToSql()
 	if err != nil {

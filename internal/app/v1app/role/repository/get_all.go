@@ -14,7 +14,7 @@ func (r *repository) GetAll(ctx context.Context, pagination *pagination.Paginati
 	op := "v1.role.repository.GetAll"
 
 	qb := r.pgQb.
-		Select(model.ColumnID, model.ColumnName).
+		Select(model.ColumnAsID, model.ColumnName).
 		From(model.TableName).
 		Limit(pagination.Limit()).
 		Offset(pagination.Offset())

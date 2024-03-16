@@ -25,7 +25,7 @@ var (
 
 // Repository ...
 type Repository interface {
-	Create(context.Context, *dto.Role) (int64, error)
+	Create(context.Context, string) (int64, error)
 	GetByID(context.Context, int64) (*model.Role, error)
 	Update(context.Context, *dto.Role) (*model.Role, error)
 	Delete(context.Context, int64) error

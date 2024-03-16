@@ -5,20 +5,20 @@ import (
 	"errors"
 	"log/slog"
 
-	"github.com/eliofery/golang-grpc/internal/app/v1app/role/dto"
 	"github.com/eliofery/golang-grpc/internal/app/v1app/role/model"
 	"github.com/eliofery/golang-grpc/internal/core/database/postgres"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-func (r *repository) Create(ctx context.Context, role *dto.Role) (int64, error) {
+// Create ...
+func (r *repository) Create(ctx context.Context, name string) (int64, error) {
 	op := "v1.role.repository.Create"
 
 	qb := r.pgQb.
 		Insert(model.TableName).
 		Columns(model.ColumnName).
-		Values(role.Name).
+		Values(name).
 		Suffix("RETURNING id")
 
 	query, args, err := qb.ToSql()

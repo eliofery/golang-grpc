@@ -16,7 +16,7 @@ func (r *repository) GetByID(ctx context.Context, id int64) (*model.Role, error)
 	op := "v1.role.repository.GetByID"
 
 	qb := r.pgQb.
-		Select("id as role_id", model.ColumnName).
+		Select(model.ColumnAsID, model.ColumnName).
 		From(model.TableName).
 		Where(squirrel.Eq{model.ColumnID: id})
 
