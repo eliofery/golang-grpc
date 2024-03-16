@@ -8,7 +8,7 @@ const (
 	ColumnName = "name"
 
 	ColumnAliasID = "role_id"
-	ColumnAsID    = "roles.id AS " + ColumnAliasID
+	ColumnAsID    = "roles.id AS role_id"
 )
 
 // Role ...
