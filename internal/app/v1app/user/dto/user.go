@@ -6,6 +6,7 @@ import (
 
 // User ...
 type User struct {
+	ID        int64
 	FirstName sql.NullString
 	LastName  sql.NullString
 	Email     string
