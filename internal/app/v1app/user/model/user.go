@@ -21,17 +21,17 @@ const (
 	ColumnUpdatedAt = "updated_at"
 
 	ColumnAliasID = "user_id"
-	ColumnAsID    = "users.id AS " + ColumnAliasID
+	ColumnAsID    = "users.id AS user_id"
 )
 
 // User ...
 type User struct {
-	ID        int64          `db:"user_id"`
-	FirstName sql.NullString `db:"first_name"`
-	LastName  sql.NullString `db:"last_name"`
-	Email     string         `db:"email"`
-	Password  string         `db:"password"`
-	Role      roleModel.Role `db:""`
-	CreatedAt time.Time      `db:"created_at"`
-	UpdatedAt sql.NullTime   `db:"updated_at"`
+	ID        int64           `db:"user_id"`
+	FirstName sql.NullString  `db:"first_name"`
+	LastName  sql.NullString  `db:"last_name"`
+	Email     string          `db:"email"`
+	Password  string          `db:"password"`
+	Role      *roleModel.Role `db:""`
+	CreatedAt time.Time       `db:"created_at"`
+	UpdatedAt sql.NullTime    `db:"updated_at"`
 }
