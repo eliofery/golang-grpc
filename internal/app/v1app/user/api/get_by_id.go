@@ -14,7 +14,7 @@ func (a *api) GetByID(ctx context.Context, req *desc.GetByIDRequest) (*desc.GetB
 		return nil, interceptor.ErrNotAuthenticated
 	}
 
-	user, err := a.userService.GetByID(ctx, req.GetId())
+	user, err := a.userService.GetByID(ctx, req.GetId(), interceptor.UserID(ctx))
 	if err != nil {
 		return nil, err
 	}

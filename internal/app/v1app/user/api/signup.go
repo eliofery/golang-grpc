@@ -14,12 +14,8 @@ func (a *api) SignUp(ctx context.Context, req *desc.SignUpRequest) (*desc.SignUp
 		return nil, interceptor.ErrAlreadyAuthenticated
 	}
 
-	id, err := a.userService.Create(ctx, converter.FromSignUpRequestToUserDTO(req))
+	id, err := a.userService.SignUp(ctx, converter.FromSignUpRequestToUserDTO(req))
 	if err != nil {
-		return nil, err
-	}
-
-	if err = a.userService.SignUp(ctx, id); err != nil {
 		return nil, err
 	}
 

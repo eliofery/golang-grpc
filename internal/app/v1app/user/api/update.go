@@ -14,8 +14,7 @@ func (a *api) Update(ctx context.Context, req *desc.UpdateRequest) (*desc.Update
 		return nil, interceptor.ErrNotAuthenticated
 	}
 
-	req.Id = interceptor.UserID(ctx, req.GetId())
-	user, err := a.userService.Update(ctx, converter.FromUpdateRequestToUpdateDTO(req))
+	user, err := a.userService.Update(ctx, converter.FromUpdateRequestToUpdateDTO(req), interceptor.UserID(ctx))
 	if err != nil {
 		return nil, err
 	}

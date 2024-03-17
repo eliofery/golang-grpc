@@ -13,7 +13,7 @@ func (a *api) Logout(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, err
 		return nil, interceptor.ErrNotAuthenticated
 	}
 
-	if err := a.deniedtokenService.Create(ctx, interceptor.UserToken(ctx)); err != nil {
+	if err := a.userService.Logout(ctx, interceptor.UserToken(ctx)); err != nil {
 		return nil, err
 	}
 
