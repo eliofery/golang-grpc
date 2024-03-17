@@ -10,9 +10,6 @@ func NewModule() fx.Option {
 	return fx.Module("setting_v1",
 		fx.Provide(
 			repository.New,
-			//service.New,
-			//api.New,
 		),
-		//fx.Invoke(),
 	)
 }
