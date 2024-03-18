@@ -18,8 +18,7 @@ func panicRecovery(logger *eslog.Logger) grpc.UnaryServerInterceptor {
 				logger.Error("Recovered from panic", slog.Any("err", r))
 
 				buf := new(bytes.Buffer)
-				stack := debug.Stack()
-				buf.Write(stack)
+				buf.Write(debug.Stack())
 
 				logger.Error("Stack trace", slog.String("err", buf.String()))
 			}
