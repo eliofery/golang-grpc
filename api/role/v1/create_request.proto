@@ -15,10 +15,10 @@ message CreateRequest {
       required: "name"
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=Role%20v1"
+      url: "http://localhost:8086/?urls.primaryName=Role"
       description: "Request to create new role"
     }
-    example: '{"name":"Guest"}'
+    example: '{"name":"Client","permissions":["1","2"]}'
   };
 
   // Role name
@@ -29,6 +29,14 @@ message CreateRequest {
     },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
       description: 'Name string `json:"name"`'
+    }
+  ];
+
+  // Role permissions
+  repeated int64 permissions = 2 [
+    (buf.validate.field).repeated.items.int64.gte = 0,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'Permissions []int64 `json:"permissions"`'
     }
   ];
 }

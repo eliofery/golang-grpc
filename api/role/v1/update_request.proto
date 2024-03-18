@@ -14,10 +14,10 @@ message UpdateRequest {
       description: "Request to update role"
     }
     external_docs: {
-      url: "http://localhost:8086/?urls.primaryName=Role%20v1"
+      url: "http://localhost:8086/?urls.primaryName=Role"
       description: "Request to update role"
     }
-    example: '{"name":"Root"}'
+    example: '{"name":"Guest","permissions":["1","2","3"]}'
   };
 
   // Role ID
@@ -30,8 +30,20 @@ message UpdateRequest {
 
   // Role name
   string name = 2 [
+    (buf.validate.field).string = {
+      min_len: 3,
+      max_len: 50
+    },
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
       description: 'Name string `json:"name"`'
+    }
+  ];
+
+  // Role permissions
+  repeated int64 permissions = 3 [
+    (buf.validate.field).repeated.items.int64.gte = 0,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: 'Permissions []int64 `json:"permissions"`'
     }
   ];
 }
