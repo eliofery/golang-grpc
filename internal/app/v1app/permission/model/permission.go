@@ -8,14 +8,17 @@ import (
 const (
 	TableName = "permissions"
 
-	ColumnID          = "id"
+	ColumnID          = "permissions.id"
 	ColumnName        = "name"
 	ColumnDescription = "description"
+
+	ColumnAliasID = "permission_id"
+	ColumnAsID    = "permissions.id AS permission_id"
 )
 
 // Permission ...
 type Permission struct {
-	ID          int64          `db:"id"`
+	ID          int64          `db:"permission_id"`
 	Name        string         `db:"name"`
 	Description sql.NullString `db:"description"`
 }
