@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"strconv"
 	"strings"
@@ -16,6 +17,7 @@ import (
 )
 
 const (
+	roleKey       = "role"
 	bearerPrefix  = "Bearer "
 	authHeaderKey = "Authorization"
 )
@@ -24,7 +26,8 @@ var (
 	errCreateToken  = status.Error(codes.Internal, "failed create token")
 	errGetToken     = status.Error(codes.Internal, "failed get token")
 	errInvalidToken = status.Error(codes.InvalidArgument, "invalid token")
-	errUserData     = status.Error(codes.Internal, "failed get user data")
+	errUserSubject  = status.Error(codes.Internal, "failed get user subject")
+	errUserRole     = status.Error(codes.Internal, "failed get user role")
 )
 
 // TokenManager ...
@@ -42,12 +45,13 @@ func New(config *Config, logger *eslog.Logger) *TokenManager {
 }
 
 // Generate ...
-func (t *TokenManager) Generate(userID int64) (string, error) {
+func (t *TokenManager) Generate(userID, roleID int64) (string, error) {
 	op := "core.jwt.Generate"
 
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": strconv.FormatInt(userID, 10),
-		"exp": time.Now().Add(time.Second * t.config.Expires).Unix(),
+		"sub":   strconv.FormatInt(userID, 10),
+		roleKey: strconv.FormatInt(roleID, 10),
+		"exp":   time.Now().Add(time.Second * t.config.Expires).Unix(),
 	})
 
 	token, err := claims.SignedString([]byte(t.config.Secret))
@@ -90,19 +94,26 @@ func (t *TokenManager) Verify(token string) (claims jwt.MapClaims, err error) {
 func (t *TokenManager) GetSubject(claims jwt.MapClaims) (int64, error) {
 	op := "core.jwt.GetSubject"
 
-	userID, err := claims.GetSubject()
+	id, err := claims.GetSubject()
 	if err != nil {
 		t.logger.Debug(op, slog.String("err", err.Error()))
-		return 0, errUserData
+		return 0, errUserSubject
 	}
 
-	id, err := strconv.ParseInt(userID, 10, 64)
-	if err != nil {
-		t.logger.Debug(op, slog.String("err", err.Error()))
-		return 0, errUserData
+	return strconv.ParseInt(id, 10, 64)
+}
+
+// GetRole ...
+func (t *TokenManager) GetRole(claims jwt.MapClaims) (int64, error) {
+	op := "core.jwt.GetRole"
+
+	id, ok := claims[roleKey].(string)
+	if !ok {
+		t.logger.Debug(op, slog.String("err", fmt.Sprintf("%s is invalid", roleKey)))
+		return 0, errUserRole
 	}
 
-	return id, nil
+	return strconv.ParseInt(id, 10, 64)
 }
 
 // SendAuthHeader ...
