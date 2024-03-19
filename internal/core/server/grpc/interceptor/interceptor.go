@@ -1,8 +1,8 @@
 package interceptor
 
 import (
-	deniedtokenv1 "github.com/eliofery/golang-grpc/internal/app/v1app/denied_token/repository"
-	userV1Repository "github.com/eliofery/golang-grpc/internal/app/v1app/user/repository"
+	deniedTokenRepository "github.com/eliofery/golang-grpc/internal/app/v1app/denied_token/repository"
+	rolePermissionRepository "github.com/eliofery/golang-grpc/internal/app/v1app/role_permission/repository"
 	"github.com/eliofery/golang-grpc/internal/core/jwt"
 	"github.com/eliofery/golang-grpc/pkg/eslog"
 	"google.golang.org/grpc"
@@ -13,12 +13,12 @@ func New(
 	logger *eslog.Logger,
 	tokenManager *jwt.TokenManager,
 
-	deniedtokenv1 deniedtokenv1.Repository,
-	userV1Repository userV1Repository.Repository,
+	deniedTokenRepository deniedTokenRepository.Repository,
+	rolePermissionRepository rolePermissionRepository.Repository,
 ) []grpc.UnaryServerInterceptor {
 	return []grpc.UnaryServerInterceptor{
 		panicRecovery(logger),
 		validate(logger),
-		userDataFromAuthHeader(logger, tokenManager, deniedtokenv1, userV1Repository),
+		userDataFromToken(logger, tokenManager, deniedTokenRepository, rolePermissionRepository),
 	}
 }

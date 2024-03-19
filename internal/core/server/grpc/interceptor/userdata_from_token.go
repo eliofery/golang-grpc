@@ -4,9 +4,8 @@ import (
 	"context"
 	"log/slog"
 
-	deniedTokenV1Repository "github.com/eliofery/golang-grpc/internal/app/v1app/denied_token/repository"
-	"github.com/eliofery/golang-grpc/internal/app/v1app/user/model"
-	userV1Repository "github.com/eliofery/golang-grpc/internal/app/v1app/user/repository"
+	deniedTokenRepository "github.com/eliofery/golang-grpc/internal/app/v1app/denied_token/repository"
+	rolePermissionRepository "github.com/eliofery/golang-grpc/internal/app/v1app/role_permission/repository"
 	"github.com/eliofery/golang-grpc/internal/core/jwt"
 	"github.com/eliofery/golang-grpc/pkg/eslog"
 	"google.golang.org/grpc"
@@ -24,27 +23,32 @@ var (
 
 	// ErrNotAuthenticated ...
 	ErrNotAuthenticated = status.Error(codes.PermissionDenied, "you are not authenticated")
+
+	// ErrAccessDenied ...
+	ErrAccessDenied = status.Error(codes.PermissionDenied, "access denied")
 )
 
 // UserData ...
 type UserData struct {
-	User  *model.User
-	Token string
+	ID          int64
+	Permissions []string
+	Token       string
 }
 
-// userDataFromAuthHeader ...
-func userDataFromAuthHeader(
+// userDataFromToken ...
+func userDataFromToken(
 	logger *eslog.Logger,
 	tokenManager *jwt.TokenManager,
 
-	deniedTokenV1Repository deniedTokenV1Repository.Repository,
-	userV1Repository userV1Repository.Repository,
+	deniedTokenRepository deniedTokenRepository.Repository,
+	rolePermissionRepository rolePermissionRepository.Repository,
 ) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
-		op := "core.server.grpc.interceptor.userDataFromAuthHeader"
+		op := "core.server.grpc.interceptor.userDataFromToken"
 
 		token, err := tokenManager.GetAuthHeader(ctx)
 		if err != nil {
+			logger.Debug(op, slog.String("err", err.Error()))
 			return handler(ctx, req)
 		}
 
@@ -54,7 +58,7 @@ func userDataFromAuthHeader(
 			return handler(ctx, req)
 		}
 
-		if deniedToken, _ := deniedTokenV1Repository.GetByToken(ctx, token); deniedToken != nil {
+		if deniedToken, _ := deniedTokenRepository.GetByToken(ctx, token); deniedToken != nil {
 			logger.Debug(op, slog.String("err", "denied token"))
 			return handler(ctx, req)
 		}
@@ -65,18 +69,25 @@ func userDataFromAuthHeader(
 			return handler(ctx, req)
 		}
 
-		user, err := userV1Repository.GetByID(ctx, userID)
+		roleID, err := tokenManager.GetRole(claims)
 		if err != nil {
 			logger.Debug(op, slog.String("err", err.Error()))
 			return handler(ctx, req)
 		}
 
-		userData := UserData{
-			User:  user,
-			Token: token,
+		permissions, err := rolePermissionRepository.GetPermissionsByRoleID(ctx, roleID)
+		if err != nil {
+			logger.Debug(op, slog.String("err", err.Error()))
+			return handler(ctx, req)
 		}
 
-		return handler(withUser(ctx, &userData), req)
+		user := UserData{
+			ID:          userID,
+			Permissions: permissions,
+			Token:       token,
+		}
+
+		return handler(withUser(ctx, &user), req)
 	}
 }
 
@@ -93,28 +104,4 @@ func User(ctx context.Context) *UserData {
 	}
 
 	return nil
-}
-
-// UserID ...
-func UserID(ctx context.Context, reqID ...int64) int64 {
-	if len(reqID) > 0 && reqID[0] != 0 {
-		return reqID[0]
-	}
-
-	return User(ctx).User.ID
-}
-
-// UserToken ...
-func UserToken(ctx context.Context) string {
-	return User(ctx).Token
-}
-
-// UserRoleID ...
-func UserRoleID(ctx context.Context) int64 {
-	return User(ctx).User.Role.ID
-}
-
-// IsAuthenticated ...
-func IsAuthenticated(ctx context.Context) bool {
-	return User(ctx) != nil
 }
