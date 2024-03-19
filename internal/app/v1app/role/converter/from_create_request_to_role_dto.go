@@ -8,6 +8,7 @@ import (
 // FromCreateRequestToRoleDTO ...
 func FromCreateRequestToRoleDTO(req *desc.CreateRequest) *dto.Role {
 	return &dto.Role{
-		Name: req.GetName(),
+		Name:        req.GetName(),
+		Permissions: req.GetPermissions(),
 	}
 }

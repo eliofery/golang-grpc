@@ -8,7 +8,8 @@ import (
 // FromUpdateRequestToRoleDTO ...
 func FromUpdateRequestToRoleDTO(req *desc.UpdateRequest) *dto.Role {
 	return &dto.Role{
-		ID:   req.Id,
-		Name: req.Name,
+		ID:          req.Id,
+		Name:        req.Name,
+		Permissions: req.Permissions,
 	}
 }
