@@ -1,8 +1,16 @@
 package service
 
-import "context"
+import (
+	"context"
+
+	"github.com/eliofery/golang-grpc/internal/core/server/grpc/interceptor"
+)
 
 // Create ...
 func (s *service) Create(ctx context.Context, token string) error {
-	return s.tokenRepository.Create(ctx, token)
+	if !interceptor.IsAccess(ctx, createPermission) {
+		return interceptor.ErrAccessDenied
+	}
+
+	return s.deniedTokenRepository.Create(ctx, token)
 }

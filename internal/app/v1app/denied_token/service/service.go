@@ -3,8 +3,15 @@ package service
 import (
 	"context"
 
-	tokenv1 "github.com/eliofery/golang-grpc/internal/app/v1app/denied_token/repository"
+	deniedToken "github.com/eliofery/golang-grpc/internal/app/v1app/denied_token/repository"
 	"github.com/eliofery/golang-grpc/internal/core/jwt"
+)
+
+const (
+	createPermission = "create_denied_tokens"
+	//readPermission   = "read_denied_tokens"
+	//updatePermission = "update_denied_tokens"
+	//deletePermission = "delete_denied_tokens"
 )
 
 // Service ...
@@ -15,18 +22,18 @@ type Service interface {
 type service struct {
 	tokenManager *jwt.TokenManager
 
-	tokenRepository tokenv1.Repository
+	deniedTokenRepository deniedToken.Repository
 }
 
 // New ...
 func New(
 	tokenManager *jwt.TokenManager,
 
-	tokenRepository tokenv1.Repository,
+	tokenRepository deniedToken.Repository,
 ) Service {
 	return &service{
 		tokenManager: tokenManager,
 
-		tokenRepository: tokenRepository,
+		deniedTokenRepository: tokenRepository,
 	}
 }
