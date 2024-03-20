@@ -5,10 +5,17 @@ import (
 
 	"github.com/eliofery/golang-grpc/internal/app/v1app/permission/dto"
 	"github.com/eliofery/golang-grpc/internal/app/v1app/permission/model"
-	permissionv1 "github.com/eliofery/golang-grpc/internal/app/v1app/permission/repository"
+	permission "github.com/eliofery/golang-grpc/internal/app/v1app/permission/repository"
 	"github.com/eliofery/golang-grpc/internal/core/database/postgres"
 	"github.com/eliofery/golang-grpc/internal/core/pagination"
 	"github.com/eliofery/golang-grpc/pkg/eslog"
+)
+
+const (
+	createPermission = "create_permissions"
+	readPermission   = "read_permissions"
+	updatePermission = "update_permissions"
+	deletePermission = "delete_permissions"
 )
 
 // Service ...
@@ -25,7 +32,7 @@ type service struct {
 	txManager  postgres.TxManager
 	pagination *pagination.Pagination
 
-	permissionRepository permissionv1.Repository
+	permissionRepository permission.Repository
 }
 
 // New ...
@@ -34,7 +41,7 @@ func New(
 	txManager postgres.TxManager,
 	pagination *pagination.Pagination,
 
-	permissionRepository permissionv1.Repository,
+	permissionRepository permission.Repository,
 
 ) Service {
 	return &service{
