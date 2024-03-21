@@ -4,14 +4,17 @@ import (
 	"context"
 	"log/slog"
 
-	rolev1 "github.com/eliofery/golang-grpc/internal/app/v1app/role/repository"
-	settingv1 "github.com/eliofery/golang-grpc/internal/app/v1app/setting/repository"
+	deniedToken "github.com/eliofery/golang-grpc/internal/app/v1app/denied_token/repository"
+	role "github.com/eliofery/golang-grpc/internal/app/v1app/role/repository"
+	rolePermission "github.com/eliofery/golang-grpc/internal/app/v1app/role_permission/repository"
+	setting "github.com/eliofery/golang-grpc/internal/app/v1app/setting/repository"
 	"github.com/eliofery/golang-grpc/internal/app/v1app/user/dto"
 	"github.com/eliofery/golang-grpc/internal/app/v1app/user/model"
-	userv1 "github.com/eliofery/golang-grpc/internal/app/v1app/user/repository"
+	user "github.com/eliofery/golang-grpc/internal/app/v1app/user/repository"
 	"github.com/eliofery/golang-grpc/internal/core/database/postgres"
 	"github.com/eliofery/golang-grpc/internal/core/jwt"
 	"github.com/eliofery/golang-grpc/internal/core/pagination"
+	"github.com/eliofery/golang-grpc/internal/core/server/grpc/interceptor"
 	"github.com/eliofery/golang-grpc/pkg/eslog"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
@@ -21,18 +24,26 @@ import (
 var (
 	errWrongAuth        = status.Error(codes.PermissionDenied, "wrong login or password")
 	errWrongOldPassword = status.Error(codes.InvalidArgument, "wrong old password")
-	errPasswordLong     = status.Error(codes.PermissionDenied, "password is too long")
+	errPasswordLong     = status.Error(codes.InvalidArgument, "password is too long")
+)
+
+const (
+	createPermission = "create_users"
+	readPermission   = "read_users"
+	updatePermission = "update_users"
+	deletePermission = "delete_users"
 )
 
 // Service ...
 type Service interface {
-	SignUp(context.Context, int64) error
+	SignUp(context.Context, *dto.User) (int64, error)
 	SignIn(context.Context, *dto.User) error
-	GetByID(context.Context, int64) (*model.User, error)
+	Logout(context.Context, string) error
+	GetByID(context.Context, int64, int64) (*model.User, error)
 	GetAll(context.Context, uint64) ([]model.User, error)
 	Create(context.Context, *dto.User) (int64, error)
-	Update(context.Context, *dto.Update) (*model.User, error)
-	Delete(context.Context, int64) error
+	Update(context.Context, *dto.Update, int64) (*model.User, error)
+	Delete(context.Context, int64, *interceptor.UserData) error
 }
 
 type service struct {
@@ -41,9 +52,11 @@ type service struct {
 	txManager    postgres.TxManager
 	pagination   *pagination.Pagination
 
-	settingRepository settingv1.Repository
-	roleRepository    rolev1.Repository
-	userRepository    userv1.Repository
+	settingRepository        setting.Repository
+	deniedTokenRepository    deniedToken.Repository
+	roleRepository           role.Repository
+	rolePermissionRepository rolePermission.Repository
+	userRepository           user.Repository
 }
 
 // New ...
@@ -53,9 +66,11 @@ func New(
 	txManager postgres.TxManager,
 	pagination *pagination.Pagination,
 
-	settingRepository settingv1.Repository,
-	roleRepository rolev1.Repository,
-	userRepository userv1.Repository,
+	settingRepository setting.Repository,
+	deniedTokenRepository deniedToken.Repository,
+	roleRepository role.Repository,
+	rolePermissionRepository rolePermission.Repository,
+	userRepository user.Repository,
 ) Service {
 	return &service{
 		tokenManager: tokenManager,
@@ -63,9 +78,11 @@ func New(
 		txManager:    txManager,
 		pagination:   pagination,
 
-		settingRepository: settingRepository,
-		userRepository:    userRepository,
-		roleRepository:    roleRepository,
+		settingRepository:        settingRepository,
+		deniedTokenRepository:    deniedTokenRepository,
+		roleRepository:           roleRepository,
+		rolePermissionRepository: rolePermissionRepository,
+		userRepository:           userRepository,
 	}
 }
 

@@ -17,7 +17,7 @@ func (s *service) SignIn(ctx context.Context, user *dto.User) error {
 		return err
 	}
 
-	token, err := s.tokenManager.Generate(findUser.ID)
+	token, err := s.tokenManager.Generate(findUser.ID, findUser.Role.ID)
 	if err != nil {
 		return err
 	}
