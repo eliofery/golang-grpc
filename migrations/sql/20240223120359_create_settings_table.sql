@@ -4,7 +4,7 @@ CREATE TABLE settings
 (
     id    SERIAL PRIMARY KEY,
     name  VARCHAR(50) UNIQUE NOT NULL,
-    value TEXT
+    value TEXT NOT NULL
 );
 -- +goose StatementEnd
 

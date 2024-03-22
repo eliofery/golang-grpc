@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-INSERT INTO role_permissions (role_id, permission_id)
+INSERT INTO roles_permissions (role_id, permission_id)
 VALUES (1, 1), -- admin (all permissions)
        (1, 2),
        (1, 3),
@@ -48,6 +48,6 @@ VALUES (1, 1), -- admin (all permissions)
 -- +goose Down
 -- +goose StatementBegin
 DELETE
-FROM role_permissions
+FROM roles_permissions
 WHERE role_id IN (1,2,3);
 -- +goose StatementEnd
