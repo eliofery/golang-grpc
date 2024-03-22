@@ -8,7 +8,7 @@ import (
 )
 
 // LogEvent implements fxevent.Logger
-func (l *Logger) LogEvent(event fxevent.Event) {
+func (l *logger) LogEvent(event fxevent.Event) {
 	switch e := event.(type) {
 	case *fxevent.OnStartExecuting:
 		l.Trace("OnStart hook executing",

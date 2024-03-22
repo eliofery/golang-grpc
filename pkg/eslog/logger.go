@@ -30,6 +30,7 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"go.uber.org/fx/fxevent"
 )
 
 // Level ...
@@ -60,26 +61,47 @@ var LevelColor = map[slog.Leveler]colorFn{
 	LevelFatal:      color.HiRedString,
 }
 
+// LoggerLevel ...
+type LoggerLevel interface {
+	Trace(msg string, args ...any)
+	Debug(msg string, args ...any)
+	Info(msg string, args ...any)
+	Warn(msg string, args ...any)
+	Error(msg string, args ...any)
+	Fatal(msg string, args ...any)
+
+	Sprintf(msg string, args ...any) string
+	Fatalf(msg string, args ...any)
+	Print(msg string, args ...any)
+	Printf(msg string, args ...any)
+}
+
 // Logger ...
-type Logger struct {
+type Logger interface {
+	fxevent.Logger
+	LoggerLevel
+}
+
+// Logger ...
+type logger struct {
 	*slog.Logger
 	*slog.LevelVar
 }
 
 // New log init
 // See: https://github.com/golang/go/issues/59145#issuecomment-1481920720
-func New(handler slog.Handler, lvl *slog.LevelVar) *Logger {
-	logger := slog.New(handler)
-	slog.SetDefault(logger)
+func New(handler slog.Handler, lvl *slog.LevelVar) Logger {
+	log := slog.New(handler)
+	slog.SetDefault(log)
 
-	return &Logger{
-		Logger:   logger,
+	return &logger{
+		Logger:   log,
 		LevelVar: lvl,
 	}
 }
 
 // Log ...
-func (l *Logger) log(level slog.Level, msg string, args ...any) {
+func (l *logger) log(level slog.Level, msg string, args ...any) {
 	if !l.Enabled(context.Background(), level) {
 		return
 	}
@@ -96,38 +118,38 @@ func (l *Logger) log(level slog.Level, msg string, args ...any) {
 }
 
 // Trace logs at LevelTrace.
-func (l *Logger) Trace(msg string, args ...any) {
+func (l *logger) Trace(msg string, args ...any) {
 	l.log(LevelTrace, msg, args...)
 }
 
 // Fatal logs at LevelFatal.
-func (l *Logger) Fatal(msg string, args ...any) {
+func (l *logger) Fatal(msg string, args ...any) {
 	l.log(LevelFatal, msg, args...)
 
 	os.Exit(1)
 }
 
 // Sprintf ...
-func (l *Logger) Sprintf(msg string, args ...any) string {
+func (l *logger) Sprintf(msg string, args ...any) string {
 	return fmt.Sprintf(msg, args...)
 }
 
 // Fatalf logs at LevelFatal.
-func (l *Logger) Fatalf(msg string, args ...any) {
+func (l *logger) Fatalf(msg string, args ...any) {
 	l.Fatal(l.Sprintf(l.removeLineBreak(msg), args...))
 }
 
 // Print logs any level.
-func (l *Logger) Print(msg string, args ...any) {
+func (l *logger) Print(msg string, args ...any) {
 	l.log(l.Level(), l.removeLineBreak(msg), args...)
 }
 
 // Printf logs any level.
-func (l *Logger) Printf(msg string, args ...any) {
+func (l *logger) Printf(msg string, args ...any) {
 	l.log(l.Level(), l.Sprintf(l.removeLineBreak(msg), args...))
 }
 
 // removeLineBreak ...
-func (l *Logger) removeLineBreak(msg string) string {
+func (l *logger) removeLineBreak(msg string) string {
 	return strings.Replace(msg, "\n", " ", -1)
 }

@@ -27,10 +27,7 @@ func replaceLevel(a slog.Attr) slog.Attr {
 	return a
 }
 
-// replaceSource путь до файла в котором был вызван лог
-// Реализация с использованием ASCII
-// absPath, err := filepath.Abs(source.File)
-// formattedPath := fmt.Sprintf("\x1b]8;;file://%v\x1b\\%s:%v\x1b]8;;\x1b\\", absPath, relPath, source.Line)
+// replaceSource ...
 func replaceSource(a slog.Attr) slog.Attr {
 	source := a.Value.Any().(slog.Source)
 
