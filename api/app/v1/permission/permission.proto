@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package app.v1.permission;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/eliofery/golang-grpc/pkg/api/app/v1/permission";
+
+message Permission {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Permission"
+      description: "Permission details"
+    }
+  };
+
+  int64 id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "ID"
+    description: "Permission ID"
+  }];
+
+  string name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Name"
+    description: "Permission name"
+  }];
+
+  google.protobuf.StringValue description = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Description"
+    description: "Permission description"
+  }];
+}
