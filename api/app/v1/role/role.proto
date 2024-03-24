@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package app.v1.role;
+
+import "app/v1/permission/permission.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/eliofery/golang-grpc/pkg/api/app/v1/role";
+
+message Role {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Role",
+      description: "Role details"
+    }
+  };
+
+  int64 id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "ID"
+    description: "Role ID"
+  }];
+
+  string name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Name"
+    description: "Role name"
+  }];
+
+  repeated permission.Permission permissions = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Permissions"
+    description: "Role permissions"
+  }];
+}
