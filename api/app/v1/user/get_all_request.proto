@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package app.v1.user;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "buf/validate/validate.proto";
+
+option go_package = "github.com/eliofery/golang-grpc/pkg/api/app/v1/user";
+
+message GetUsersRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "GetUsersRequest"
+      description: "Get all user request"
+      required: "page"
+    }
+  };
+
+  uint64 page = 1 [
+    (buf.validate.field).uint64.gte = 0,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Page"
+    description: "Page number"
+    default: "1"
+  }];
+}

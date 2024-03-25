@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package app.v1.user;
+
+import "app/v1/role/role.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/eliofery/golang-grpc/pkg/api/app/v1/user";
+
+message User {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "User"
+      description: "User details"
+    }
+  };
+
+  int64 id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "ID"
+    description: "User ID"
+  }];
+
+  google.protobuf.StringValue first_name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "First Name"
+    description: "User first name"
+  }];
+
+  google.protobuf.StringValue last_name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Last Name"
+    description: "User last name"
+  }];
+
+  string email = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Email"
+    description: "User email"
+  }];
+
+  string password = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Password"
+    description: "User password"
+  }];
+
+  role.Role role = 6;
+
+  google.protobuf.Timestamp created_at = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Created At"
+    description: "User created at"
+  }];
+
+  google.protobuf.Timestamp updated_at = 8 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Updated At"
+    description: "User updated at"
+  }];
+}

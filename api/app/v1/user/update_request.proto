@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package app.v1.user;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/wrappers.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/eliofery/golang-grpc/pkg/api/app/v1/user";
+
+message UpdateUserRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "UpdateUserRequest"
+      description: "Update user request"
+    }
+  };
+
+  int64 id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "ID"
+    description: "User ID"
+  }];
+
+  google.protobuf.StringValue first_name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "First Name"
+    description: "User first name"
+  }];
+
+  google.protobuf.StringValue last_name = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Last Name"
+    description: "User last name"
+  }];
+
+  google.protobuf.StringValue email = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Email"
+    description: "User email"
+  }];
+
+  google.protobuf.StringValue old_password = 5 [
+    (buf.validate.field) = {
+      cel: {
+        id: "old_password",
+        message: "must be 8 - 72 characters long and only contain letters and digits",
+        expression: "this.matches('^[-_ A-Za-z0-9]{8,72}$')"
+      }
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      title: "Old password"
+      description: "User old password must be 8 - 72 characters long and only contain letters and digits"
+      pattern: "^[-_ A-Za-z0-9]{8,72}$"
+      min_length: 8
+      max_length: 72
+    }
+  ];
+
+  google.protobuf.StringValue new_password = 6 [
+    (buf.validate.field) = {
+      cel: {
+        id: "new_password",
+        message: "must be 8 - 72 characters long and only contain letters and digits",
+        expression: "this.matches('^[-_ A-Za-z0-9]{8,72}$')"
+      }
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      title: "New password"
+      description: "User old password must be 8 - 72 characters long and only contain letters and digits"
+      pattern: "^[-_ A-Za-z0-9]{8,72}$"
+      min_length: 8
+      max_length: 72
+    }
+  ];
+
+  google.protobuf.Int64Value role_id = 7 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "ID"
+    description: "Role ID"
+  }];
+}
