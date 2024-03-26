@@ -1,12 +1,8 @@
 package model
 
-// Setting table description
 const (
-	TableName = "settings"
-
-	ColumnID    = "id"
-	ColumnName  = "name"
-	ColumnValue = "value"
+	// DefaultNameRoleID ...
+	DefaultNameRoleID = "default_role_id"
 )
 
 // Setting ...
