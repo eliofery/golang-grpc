@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package app.v1.auth;
+
+import "app/v1/auth/token.proto";
+import "google/rpc/status.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/eliofery/golang-grpc/pkg/api/app/v1/auth";
+
+message SignUpResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "SignUpResponse"
+      description: "User registration response"
+    }
+  };
+
+  Token token = 1;
+
+  google.rpc.Status status = 2;
+}

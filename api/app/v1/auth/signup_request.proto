@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package app.v1.auth;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/wrappers.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/eliofery/golang-grpc/pkg/api/app/v1/auth";
+
+message SignUpRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "SignUpRequest"
+      description: "User registration request"
+      required: [
+        "email",
+        "password",
+        "password_confirm"
+      ]
+    }
+  };
+
+  google.protobuf.StringValue first_name = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "First name"
+    description: "User first name"
+  }];
+
+  google.protobuf.StringValue last_name = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Last name"
+    description: "User last name"
+  }];
+
+  string email = 3 [
+    (buf.validate.field).required = true,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      title: "Email"
+      description: "User email"
+    }
+  ];
+
+  string password = 4 [
+    (buf.validate.field) = {
+      required: true,
+      cel: {
+        id: "password",
+        message: "must be 8 - 72 characters long and only contain letters and digits",
+        expression: "this.matches('^[-_ A-Za-z0-9]{8,72}$')"
+      }
+    },
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      title: "Password"
+      description: "User password must be 8 - 72 characters long and only contain letters and digits"
+      pattern: "^[-_ A-Za-z0-9]{8,72}$"
+      min_length: 8
+      max_length: 72
+    }
+  ];
+
+  string password_confirm = 5 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Password confirm"
+    description: "User password confirm must match with password"
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "signup_request.password_match",
+    message: "Passwords don't match",
+    expression: "this.password == this.password_confirm"
+  };
+}

@@ -29,5 +29,8 @@ plugins:
   - name: openapiv2
     path: ./bin/protoc-gen-openapiv2
     out: ./docs/api
+    strategy: all
     opt:
       - disable_service_tags=true
+#      - allow_merge=true
+#      - merge_file_name=apidocs

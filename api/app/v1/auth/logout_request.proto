@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package app.v1.auth;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/eliofery/golang-grpc/pkg/api/app/v1/auth";
+
+message LogoutRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "LogoutRequest"
+      description: "User logout request"
+      required: "refresh_token"
+    }
+  };
+
+  string refresh_token = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Refresh token"
+    description: "Used to get new access token and logout"
+  }];
+}
