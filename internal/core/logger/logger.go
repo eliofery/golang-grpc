@@ -4,11 +4,10 @@ import (
 	"log/slog"
 	"os"
 
-	"go.uber.org/fx"
-	"go.uber.org/fx/fxevent"
-
 	"github.com/eliofery/golang-grpc/pkg/eslog"
 	"github.com/eliofery/golang-grpc/pkg/eslog/pretty"
+	"go.uber.org/fx"
+	"go.uber.org/fx/fxevent"
 )
 
 // Logger ...
@@ -28,7 +27,7 @@ func New(config *Config) Logger {
 }
 
 // WithLogger ...
-func WithLogger(log *eslog.Logger) fxevent.Logger {
+func WithLogger(log eslog.Logger) fxevent.Logger {
 	return log
 }
 
