@@ -27,7 +27,9 @@ var Option Options
 
 func init() {
 	flag.Usage = func() {
-		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "%s\n", Option.getDesc())
+		_, _ = fmt.Fprint(flag.CommandLine.Output(), "Usage: bin/grpc-server [options]\n\n")
+		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "%s\n", Option.descPostgres())
+		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "%s\n", Option.descRedis())
 		_, _ = fmt.Fprint(flag.CommandLine.Output(), "Options:\n")
 		flag.PrintDefaults()
 	}
@@ -44,18 +46,30 @@ func NewCli() *Options {
 	return &Option
 }
 
-// getDesc ...
-func (o *Options) getDesc() string {
-	return `Usage: bin/grpc-server [options]
-
-Postgres server:
+// descPostgres ...
+func (o *Options) descPostgres() string {
+	return `Postgres server:
 To start the postgres server you need to run docker compose and specify parameters in env:
 
-  POSTGRES_USER			postgres user name
-  POSTGRES_PASSWORD		postgres user password
+  POSTGRES_USER			postgres login database
+  POSTGRES_PASSWORD		postgres password database
   POSTGRES_DATABASE		postgres name database
 
   Example:
   POSTGRES_USER=root POSTGRES_PASSWORD=123456 POSTGRES_DATABASE=test bin/grpc-server
+`
+}
+
+// descRedis ...
+func (o *Options) descRedis() string {
+	return `Redis server:
+To start the redis server you need to run docker compose and specify parameters in env:
+
+  REDIS_USER			redis login database
+  REDIS_PASSWORD		redis password database
+  REDIS_DATABASE		redis name database
+
+  Example:
+  REDIS_USER=root REDIS_PASSWORD=123456 REDIS_DATABASE=0 bin/grpc-server
 `
 }
