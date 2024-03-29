@@ -14,11 +14,11 @@ import (
 // postgres ...
 type postgres struct {
 	conn   *pgxpool.Pool
-	logger *eslog.Logger
+	logger eslog.Logger
 }
 
 // NewDB ...
-func NewDB(conn *pgxpool.Pool, logger *eslog.Logger) DB {
+func NewDB(conn *pgxpool.Pool, logger eslog.Logger) DB {
 	return &postgres{
 		conn:   conn,
 		logger: logger,
@@ -28,6 +28,11 @@ func NewDB(conn *pgxpool.Pool, logger *eslog.Logger) DB {
 // Pool ...
 func (p *postgres) Pool() *pgxpool.Pool {
 	return p.conn
+}
+
+// GetContext ...
+func (p *postgres) GetContext(ctx context.Context, dest any, q Query, args ...any) error {
+	return pgxscan.Get(ctx, p.conn, dest, q.QueryRaw, args...)
 }
 
 // ScanOneContext ...
@@ -50,11 +55,21 @@ func (p *postgres) ScanAllContext(ctx context.Context, dest any, q Query, args .
 	return pgxscan.ScanAll(dest, rows)
 }
 
+// ScanRowContext ...
+func (p *postgres) ScanRowContext(ctx context.Context, dest any, q Query, args ...any) error {
+	rows, err := p.QueryContext(ctx, q, args...)
+	if err != nil {
+		return err
+	}
+
+	return pgxscan.ScanRow(dest, rows)
+}
+
 // ExecContext ...
 func (p *postgres) ExecContext(ctx context.Context, q Query, args ...interface{}) (pgconn.CommandTag, error) {
 	p.logger.Debug(q.Name, slog.String("query", q.QueryRaw), slog.Any("args", args))
 
-	tx, ok := ctx.Value(TxKey).(pgx.Tx)
+	tx, ok := ctx.Value(txKey).(pgx.Tx)
 	if ok {
 		return tx.Exec(ctx, q.QueryRaw, args...)
 	}
@@ -66,7 +81,7 @@ func (p *postgres) ExecContext(ctx context.Context, q Query, args ...interface{}
 func (p *postgres) QueryContext(ctx context.Context, q Query, args ...interface{}) (pgx.Rows, error) {
 	p.logger.Debug(q.Name, slog.String("query", q.QueryRaw), slog.Any("args", args))
 
-	tx, ok := ctx.Value(TxKey).(pgx.Tx)
+	tx, ok := ctx.Value(txKey).(pgx.Tx)
 	if ok {
 		return tx.Query(ctx, q.QueryRaw, args...)
 	}
@@ -78,7 +93,7 @@ func (p *postgres) QueryContext(ctx context.Context, q Query, args ...interface{
 func (p *postgres) QueryRowContext(ctx context.Context, q Query, args ...interface{}) pgx.Row {
 	p.logger.Debug(q.Name, slog.String("query", q.QueryRaw), slog.Any("args", args))
 
-	tx, ok := ctx.Value(TxKey).(pgx.Tx)
+	tx, ok := ctx.Value(txKey).(pgx.Tx)
 	if ok {
 		return tx.QueryRow(ctx, q.QueryRaw, args...)
 	}

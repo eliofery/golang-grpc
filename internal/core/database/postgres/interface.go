@@ -34,15 +34,17 @@ type SQLExecer interface {
 
 // NamedExecer ...
 type NamedExecer interface {
-	ScanOneContext(ctx context.Context, dest interface{}, q Query, args ...interface{}) error
-	ScanAllContext(ctx context.Context, dest interface{}, q Query, args ...interface{}) error
+	GetContext(ctx context.Context, dest any, q Query, args ...any) error
+	ScanOneContext(ctx context.Context, dest any, q Query, args ...any) error
+	ScanAllContext(ctx context.Context, dest any, q Query, args ...any) error
+	ScanRowContext(ctx context.Context, dest any, q Query, args ...any) error
 }
 
 // QueryExecer ...
 type QueryExecer interface {
-	ExecContext(ctx context.Context, q Query, args ...interface{}) (pgconn.CommandTag, error)
-	QueryContext(ctx context.Context, q Query, args ...interface{}) (pgx.Rows, error)
-	QueryRowContext(ctx context.Context, q Query, args ...interface{}) pgx.Row
+	ExecContext(ctx context.Context, q Query, args ...any) (pgconn.CommandTag, error)
+	QueryContext(ctx context.Context, q Query, args ...any) (pgx.Rows, error)
+	QueryRowContext(ctx context.Context, q Query, args ...any) pgx.Row
 }
 
 // Transactor ...

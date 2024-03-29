@@ -17,26 +17,22 @@ const (
 	dirMigration = "sql"
 )
 
-// ClientPostgres ...
-type ClientPostgres struct {
+// clientPostgres ...
+type clientPostgres struct {
 	config *Config
-	logger *eslog.Logger
+	logger eslog.Logger
 
 	masterDBC DB
 }
 
 // NewClient ...
-func NewClient(ctx context.Context, config *Config, logger *eslog.Logger) (Client, error) {
+func NewClient(ctx context.Context, config *Config, logger eslog.Logger) (Client, error) {
 	conn, err := pgxpool.New(ctx, config.DSN())
 	if err != nil {
 		return nil, err
 	}
 
-	if err = conn.Ping(ctx); err != nil {
-		return nil, err
-	}
-
-	return &ClientPostgres{
+	return &clientPostgres{
 		config: config,
 		logger: logger,
 
@@ -45,17 +41,17 @@ func NewClient(ctx context.Context, config *Config, logger *eslog.Logger) (Clien
 }
 
 // DB ...
-func (cp *ClientPostgres) DB() DB {
+func (cp *clientPostgres) DB() DB {
 	return cp.masterDBC
 }
 
 // QB ...
-func (cp *ClientPostgres) QB() squirrel.StatementBuilderType {
+func (cp *clientPostgres) QB() squirrel.StatementBuilderType {
 	return squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
 }
 
 // Close ...
-func (cp *ClientPostgres) Close() error {
+func (cp *clientPostgres) Close() error {
 	if cp.masterDBC != nil {
 		return cp.masterDBC.Close()
 	}
@@ -64,7 +60,7 @@ func (cp *ClientPostgres) Close() error {
 }
 
 // Migrate ...
-func (cp *ClientPostgres) Migrate() error {
+func (cp *clientPostgres) Migrate() error {
 	if !cp.config.IsMigration {
 		return nil
 	}

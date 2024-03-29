@@ -17,12 +17,12 @@ func NewModule() fx.Option {
 		fx.Invoke(
 			func(lc fx.Lifecycle, pgClient Client) {
 				lc.Append(fx.Hook{
-					OnStart: func(_ context.Context) error {
-						if err := pgClient.Migrate(); err != nil {
+					OnStart: func(ctx context.Context) error {
+						if err := pgClient.DB().Ping(ctx); err != nil {
 							return err
 						}
 
-						return nil
+						return pgClient.Migrate()
 					},
 					OnStop: func(_ context.Context) error {
 						return pgClient.Close()

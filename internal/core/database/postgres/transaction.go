@@ -9,8 +9,8 @@ import (
 
 type key string
 
-// TxKey ...
-const TxKey key = "tx"
+// txKey ...
+const txKey key = "txPgx"
 
 type transactionManager struct {
 	db Transactor
@@ -25,18 +25,19 @@ func NewTransactionManager(db Client) TxManager {
 
 // transaction ...
 func (t *transactionManager) transaction(ctx context.Context, opts pgx.TxOptions, fn Handler) error {
-	tx, ok := ctx.Value(TxKey).(pgx.Tx) // nolint:staticcheck
-	if ok {
+	tx, ok := ctx.Value(txKey).(pgx.Tx)
+	if !ok {
 		return fn(ctx)
-	}
-
-	tx, err := t.db.BeginTx(ctx, opts)
-	if err != nil {
-		return err
 	}
 	defer tx.Rollback(ctx) // nolint:errcheck
 
-	ctx = context.WithValue(ctx, TxKey, tx)
+	var err error
+	tx, err = t.db.BeginTx(ctx, opts)
+	if err != nil {
+		return err
+	}
+
+	ctx = context.WithValue(ctx, txKey, tx)
 	if err = fn(ctx); err != nil {
 		if rbErr := tx.Rollback(ctx); rbErr != nil {
 			return fmt.Errorf("tx err: %w, rb err: %w", err, rbErr)
