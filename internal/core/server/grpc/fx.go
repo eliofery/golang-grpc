@@ -24,7 +24,7 @@ func NewModule() fx.Option {
 			interceptor.NewModule(),
 		),
 		fx.Invoke(
-			func(lc fx.Lifecycle, server *grpc.Server, config *Config, logger *eslog.Logger) {
+			func(lc fx.Lifecycle, server *grpc.Server, config *Config, logger eslog.Logger) {
 				lc.Append(fx.Hook{
 					OnStart: func(_ context.Context) error {
 						reflection.Register(server)

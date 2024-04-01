@@ -1,26 +1,47 @@
 package interceptor
 
 import (
-	"bytes"
 	"context"
+	"fmt"
 	"log/slog"
 	"runtime/debug"
+	"strings"
 
 	"github.com/eliofery/golang-grpc/pkg/eslog"
 	"google.golang.org/grpc"
 )
 
-// panicRecovery ...
-func panicRecovery(logger *eslog.Logger) grpc.UnaryServerInterceptor {
+// PanicRecovery ...
+type PanicRecovery interface {
+	Recovery() grpc.UnaryServerInterceptor
+}
+
+type panicRecovery struct {
+	logger eslog.Logger
+}
+
+// NewPanicRecovery ...
+func NewPanicRecovery(logger eslog.Logger) PanicRecovery {
+	return &panicRecovery{
+		logger: logger,
+	}
+}
+
+// Recovery ...
+func (p *panicRecovery) Recovery() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
 		defer func() {
 			if r := recover(); r != nil {
-				logger.Error("Recovered from panic", slog.Any("err", r))
+				p.logger.Error("Recovered from panic", slog.Any("err", r))
 
-				buf := new(bytes.Buffer)
-				buf.Write(debug.Stack())
+				stackStr := string(debug.Stack())
+				stackStr = strings.ReplaceAll(stackStr, "\t", "  ")
+				stacks := strings.Split(stackStr, "\n")
 
-				logger.Error("Stack trace", slog.String("err", buf.String()))
+				p.logger.Error("Stack trace")
+				for _, line := range stacks {
+					fmt.Println(line)
+				}
 			}
 		}()
 
