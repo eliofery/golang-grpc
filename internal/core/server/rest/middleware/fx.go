@@ -7,6 +7,7 @@ func NewModule() fx.Option {
 	return fx.Module("middleware",
 		fx.Provide(
 			NewConfig,
+			NewCors,
 			New,
 		),
 	)

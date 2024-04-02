@@ -22,7 +22,7 @@ func NewModule() fx.Option {
 			middleware.NewModule(),
 		),
 		fx.Invoke(
-			func(lc fx.Lifecycle, middlewares http.Handler, config *Config, logger *eslog.Logger) {
+			func(lc fx.Lifecycle, middlewares http.Handler, config *Config, logger eslog.Logger) {
 				httpserv := &http.Server{
 					Addr:         config.Address(),
 					Handler:      middlewares,
