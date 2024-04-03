@@ -1,3 +1,3 @@
-# Название проекта
+# Golang GRPC
 
-Описание проекта.
+Clean Architecture Golang Example with GRPC and Uber FX.

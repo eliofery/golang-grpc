@@ -1,7 +1,6 @@
 package server
 
 import (
-	"github.com/eliofery/golang-grpc/internal/app"
 	"github.com/eliofery/golang-grpc/internal/core/server/grpc"
 	"github.com/eliofery/golang-grpc/internal/core/server/rest"
 	"go.uber.org/fx"
@@ -14,7 +13,6 @@ func NewModule() fx.Option {
 			NewTransport,
 		),
 		fx.Options(
-			app.NewModule(),
 			grpc.NewModule(),
 			rest.NewModule(),
 		),

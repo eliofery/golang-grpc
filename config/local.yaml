@@ -9,7 +9,9 @@ logger:
 # openssl rand -base64 48
 jwt:
   secret: OHgnU3V9vLvaGe+6USuxhHaXswyy6eK2YxGgAPnFscdndPy+dyJc6zXLL6WzD+yz
-  expires: 3600
+  expires:
+    access-token: 100805m
+    refresh-token: 10080m # 7d
 
 grpc:
   host: "localhost"
@@ -28,13 +30,21 @@ rest:
 
 postgres:
   host: "localhost"
+  port: 5432
   # Set env
-  # port:
   # user:
   # password:
   # database:
   sslmode: disable
   is-migration: false
+
+redis:
+  host: "localhost"
+  port: 6379
+  # Set env
+  # user:
+  # password:
+  # database:
 
 pagination:
   limit: 2

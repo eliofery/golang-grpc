@@ -3,23 +3,19 @@ version: "3.9"
 services:
   swagger-editor:
     image: swaggerapi/swagger-editor:v4.12.1
-    container_name: "swagger-editor-container"
     ports:
-      - "${SWAGGER_EDITOR_PORT}:8080"
+      - "8085:8080"
 
   swagger-ui:
     image: swaggerapi/swagger-ui:v5.11.8
-    container_name: "swagger-ui-container"
     ports:
-      - "${SWAGGER_UI_PORT}:8080"
+      - "8086:8080"
     volumes:
       - ./docs/api:/usr/share/nginx/html/docs
     environment:
+#      SWAGGER_JSON: /usr/share/nginx/html/docs/apidocs.swagger.json
       URLS: "[
-        {url: '/docs/user/v1/service.swagger.json', name: 'User'},
-        {url: '/docs/denied_token/v1/service.swagger.json', name: 'Denied Token'},
-        {url: '/docs/role/v1/service.swagger.json', name: 'Role'},
-        {url: '/docs/permission/v1/service.swagger.json', name: 'Permission'}
+        {url: '/docs/app/v1/service.swagger.json', name: 'API version 1'}
       ]"
 
   postgres:
@@ -30,7 +26,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DATABASE}
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "5432:5432"
     volumes:
       - postgres_volume:/var/lib/postgresql/data
 
@@ -40,9 +36,18 @@ services:
     environment:
       ADMINER_DESIGN: dracula
     ports:
-      - "${ADMINER_PORT}:8080"
+      - "3333:8080"
     depends_on:
       - postgres
 
+  redis:
+    image: redis/redis-stack:7.2.0-v9
+    ports:
+      - "6379:6379"
+      - "8087:8001"
+    volumes:
+      - redis_volume:/data
+
 volumes:
   postgres_volume:
+  redis_volume:
